@@ -1,5 +1,6 @@
 from pico2d import *
 import game_framework
+import title_mode
 
 image = None
 logo_start_time = 0
@@ -14,9 +15,9 @@ def finish():
     del image
 
 def update():
-    if get_time() - logo_start_time > 50:
-        #game_framework.change_mode(title_mode)
-        game_framework.quit()
+    if get_time() - logo_start_time > 2:
+        game_framework.change_mode(title_mode)
+        #game_framework.quit()
 
 def draw():
     clear_canvas()
