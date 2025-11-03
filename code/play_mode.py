@@ -2,9 +2,9 @@ from pico2d import *
 
 import game_framework
 import title_mode
-# from boy import Boy
+from player import Player
 # from grass import Grass
-# import game_world
+import game_world
 
 def handle_events():
     event_list = get_events()
@@ -14,14 +14,15 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(title_mode)
         else:
-            #boy.handle_event(event)
+            player.handle_event(event)
             pass
 
 def init():
-    # global boy
-    #
-    # grass = Grass()
-    # game_world.add_object(grass, 0)
+    global player
+
+    player = Player()
+    game_world.add_object(player, 1)
+
     #
     # boy = Boy()
     # game_world.add_object(boy, 1)
@@ -29,16 +30,16 @@ def init():
     pass
 
 def finish():
-    #game_world.clear()
+    game_world.clear()
     pass
 
 def update():
-    #game_world.update()
+    game_world.update()
     pass
 
 def draw():
     clear_canvas()
-    #game_world.render()
+    game_world.render()
     update_canvas()
 
 def pause():
