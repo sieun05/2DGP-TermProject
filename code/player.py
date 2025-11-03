@@ -55,20 +55,31 @@ class Run:
         self.player = player
 
     def enter(self, e):
+        # 키 다운 이벤트에 따라 방향 값을 누적
         if w_down(e):
             self.player.dir_y += 1
             self.player.face_dir_y = 1
-        if s_down(e):
+        elif s_down(e):
             self.player.dir_y -= 1
             self.player.face_dir_y = -1
-        if a_down(e):
+        elif a_down(e):
             self.player.dir_x -= 1
             self.player.face_dir_x = -1
-        if d_down(e):
+        elif d_down(e):
             self.player.dir_x += 1
             self.player.face_dir_x = 1
 
     def exit(self, e):
+        # 키업 이벤트에 따라 방향 값을 감소
+        if w_up(e):
+            self.player.dir_y = self.player.dir_y - 1
+        elif s_up(e):
+            self.player.dir_y = self.player.dir_y + 1
+        elif a_up(e):
+            self.player.dir_x = self.player.dir_x + 1
+        elif d_up(e):
+            self.player.dir_x = self.player.dir_x - 1
+
         if space_down(e):
             self.player.attack()
 
@@ -101,18 +112,21 @@ class Player:
             self.IDLE,
             {
                 self.IDLE : {w_down: self.RUN, a_down: self.RUN, s_down: self.RUN, d_down: self.RUN, space_down: self.IDLE},
-                self.RUN : {w_up: self.IDLE, a_up: self.IDLE, s_up: self.IDLE, d_up: self.IDLE,
-                            w_down: self.RUN, a_down: self.RUN, s_down: self.RUN, d_down: self.RUN,
+                self.RUN : {w_down: self.RUN, a_down: self.RUN, s_down: self.RUN, d_down: self.RUN,
+                            w_up: self.RUN, a_up: self.RUN, s_up: self.RUN, d_up: self.RUN,
                             space_down: self.RUN},
             }
         )
 
     def update(self):
         self.state_machine.update()
+        # RUN 상태에서 모든 방향키가 떼졌는지 확인하고 IDLE로 전환
+        if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
+            self.state_machine.cur_state = self.IDLE
+            self.IDLE.enter(('STOP', None))
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
-        pass
 
     def draw(self):
         self.state_machine.draw()
