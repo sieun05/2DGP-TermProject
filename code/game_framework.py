@@ -1,7 +1,6 @@
 running = None
 stack = None
 
-
 def change_mode(mode):
     global stack
     if (len(stack) > 0):
