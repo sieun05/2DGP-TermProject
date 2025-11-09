@@ -2,6 +2,7 @@ from pico2d import *
 
 import game_framework
 import title_mode
+from map import Map
 from player import Player
 # from grass import Grass
 import game_world
@@ -20,12 +21,11 @@ def handle_events():
 def init():
     global player
 
-    player = Player()
-    game_world.add_object(player, 1)
+    map = Map()
+    game_world.add_object(map, 0)
 
-    #
-    # boy = Boy()
-    # game_world.add_object(boy, 1)
+    player = Player(map)
+    game_world.add_object(player, 1)
 
     pass
 

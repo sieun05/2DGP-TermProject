@@ -3,6 +3,7 @@ from sdl2 import *
 
 import game_world
 from state_machine import StateMachine
+from map import Map
 
 def w_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w
@@ -85,8 +86,16 @@ class Run:
 
     def do(self):
         self.player.frame = (self.player.frame + 1) % 8
-        self.player.x += self.player.dir_x * 1
-        self.player.y += self.player.dir_y * 1
+
+        if self.player.x > 800 - 30 or self.player.map.x <= 0:
+            self.player.x += self.player.dir_x * 1
+        else:
+            self.player.map.x += self.player.dir_x * 1
+
+        if self.player.y > 600 - 30 or self.player.map.y <= 0:
+            self.player.y += self.player.dir_y * 1
+        else:
+            self.player.map.y += self.player.dir_y * 1
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
@@ -96,13 +105,14 @@ class Run:
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, map):
         self.x, self.y = 400, 300
         self.frame = 0
         self.face_dir_x = 1
         self.face_dir_y = 1
         self.dir_x = 0
         self.dir_y = 0
+        self.map = map
         self.image = load_image('images/img.png')
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
