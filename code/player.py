@@ -87,10 +87,10 @@ class Run:
     def do(self):
         self.player.frame = (self.player.frame + 1) % 8
 
-        if (self.player.map.x <= 0 or self.player.map.x >= 2400):
+        if (self.player.map.x <= 0 or self.player.map.x >= 2400 - 800):
 
             if ((self.player.dir_x > 0 and self.player.map.x <= 0) or
-                (self.player.dir_x < 0 and self.player.map.x >= 2400)):
+                (self.player.dir_x < 0 and self.player.map.x >= 2400 - 800)):
                 self.player.map.x += self.player.dir_x * 1
             else:
                 self.player.x += self.player.dir_x * 1
@@ -103,13 +103,13 @@ class Run:
 
             if self.player.map.x < 0:
                 self.player.map.x = 0
-            elif self.player.map.x > 2400:
-                self.player.map.x = 2400
+            elif self.player.map.x > 2400 - 800:
+                self.player.map.x = 2400 - 800
 
-        if (self.player.map.y <= 0 or self.player.map.y >= 1800):
+        if (self.player.map.y <= 0 or self.player.map.y >= 1800 - 600):
 
             if ((self.player.dir_y > 0 and self.player.map.y <= 0) or
-                    (self.player.dir_y < 0 and self.player.map.y >= 1800)):
+                    (self.player.dir_y < 0 and self.player.map.y >= 1800 - 600)):
                 self.player.map.y += self.player.dir_y * 1
             else:
                 self.player.y += self.player.dir_y * 1
@@ -122,8 +122,17 @@ class Run:
 
             if self.player.map.y < 0:
                 self.player.map.y = 0
-            elif self.player.map.y > 1800:
-                self.player.map.y = 1800
+            elif self.player.map.y > 1800 - 600:
+                self.player.map.y = 1800 - 600
+
+        if self.player.x < 0:
+            self.player.x = 0
+        elif self.player.x > 800:
+            self.player.x = 800
+        if self.player.y < 0:
+            self.player.y = 0
+        elif self.player.y > 600:
+            self.player.y = 600
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
@@ -169,7 +178,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x - 50, self.y + 50, f'({self.x}, {self.y})', (255, 255, 0))
+        self.font.draw(self.x - 50, self.y + 50, f'({self.x}, {self.y})', (0, 0, 0))
 
     def attack(self):
         pass

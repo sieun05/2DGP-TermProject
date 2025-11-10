@@ -12,8 +12,8 @@ class Map:
         pass
 
     def draw(self):
-        self.image.clip_draw(self.x-400, self.y-300, 800, 600, 400, 300)
-        self.font.draw(100, 500, f'({self.x}, {self.y})', (255, 255, 0))
+        self.image.clip_draw(self.x, self.y, 800, 600, 400, 300)
+        self.font.draw(100, 500, f'({self.x}, {self.y})', (0, 0, 0))
 
     def clear(self):
         del self.image
