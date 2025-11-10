@@ -24,6 +24,9 @@ def remove_object(o):
 
 def update():
     for layer in world:
+        for layer in world:
+            layer.sort(key=lambda obj: obj.y, reverse=True)
+
         for o in layer:
             o.update()
 
