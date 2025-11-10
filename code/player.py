@@ -99,8 +99,14 @@ class Run:
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
+         # 이동 거리 계산
         dis_x = self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
         dis_y = self.player.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+
+        new_x = self.player.w_x
+        new_y = self.player.w_y
+        new_map_x = self.player.map.x
+        new_map_y = self.player.map.y
 
         if (self.player.map.x <= 0 or self.player.map.x >= 2400 - 800):
             if ((self.player.dir_x > 0 and self.player.map.x <= 0) or
@@ -158,11 +164,12 @@ class Run:
 class Player:
     def __init__(self, map):
         self.w_x, self.w_y = 400, 300
+        self.face_dir_x, self.face_dir_y = 1, 1
+        self.dir_x, self.dir_y = 0, 0
         self.frame = 0
-        self.face_dir_x = 1
-        self.face_dir_y = 1
-        self.dir_x = 0
-        self.dir_y = 0
+
+        self.stop_flag = False
+
         self.map = map
         self.image = load_image('images/img.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
@@ -186,6 +193,8 @@ class Player:
         self.x, self.y = self.w_x+self.map.x, self.w_y + self.map.y
 
         self.state_machine.update()
+        self.stop_flag = False
+
         # RUN 상태에서 모든 방향키가 떼졌는지 확인하고 IDLE로 전환
         if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
             self.state_machine.cur_state = self.IDLE
@@ -207,6 +216,8 @@ class Player:
 
     def handle_collision(self, key, other):
         if key == "player:building":
+            self.stop_flag = True
+
             print(f"Player collided with Building at ({other.x}, {other.y})")
         elif key == "player:zombie":
             print(f"Player collided with Zombie at ({other.x}, {other.y})")
