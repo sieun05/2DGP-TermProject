@@ -87,14 +87,39 @@ class Run:
     def do(self):
         self.player.frame = (self.player.frame + 1) % 8
 
+        if (self.player.map.x <= 0 or self.player.map.x >= 2400):
 
-
-        if ((self.player.y > 300 - 30 and self.player.y < 300 + 30)):
-            self.player.y += self.player.dir_y * 1
-            if (self.player.map.y <= 0 or self.player.map.y >= 1800):
-                self.player.map.y += self.player.dir_y * 1
+            if ((self.player.dir_x > 0 and self.player.map.x <= 0) or
+                (self.player.dir_x < 0 and self.player.map.x >= 2400)):
+                self.player.map.x += self.player.dir_x * 1
+            else:
+                self.player.x += self.player.dir_x * 1
         else:
-            self.player.map.y += self.player.dir_y * 1
+            if ((self.player.dir_x > 0 and self.player.x <=400) or
+                (self.player.dir_x < 0 and self.player.x >=400)):
+                self.player.x += self.player.dir_x * 1
+            else:
+                self.player.map.x += self.player.dir_x * 1
+
+            if self.player.map.x < 0:
+                self.player.map.x = 0
+            elif self.player.map.x > 2400:
+                self.player.map.x = 2400
+
+        if (self.player.map.y <= 0 or self.player.map.y >= 1800):
+
+            if ((self.player.dir_y > 0 and self.player.map.y <= 0) or
+                    (self.player.dir_y < 0 and self.player.map.y >= 1800)):
+                self.player.map.y += self.player.dir_y * 1
+            else:
+                self.player.y += self.player.dir_y * 1
+        else:
+            if ((self.player.dir_y > 0 and self.player.y <= 300) or
+                    (self.player.dir_y < 0 and self.player.y >= 300)):
+                self.player.y += self.player.dir_y * 1
+            else:
+                self.player.map.y += self.player.dir_y * 1
+
             if self.player.map.y < 0:
                 self.player.map.y = 0
             elif self.player.map.y > 1800:
