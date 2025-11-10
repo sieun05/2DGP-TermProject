@@ -39,6 +39,7 @@ class Zombie:
         self.frame = 0
         self.dir_x = 0
         self.dir_y = 0
+        self.face_dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.map = map
         self.image = load_image('images/img.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
@@ -62,7 +63,7 @@ class Zombie:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x - 50, self.y + 50, f'({self.x}, {self.y})', (255, 255, 0))
+        self.font.draw(self.x-(self.map.x-400), self.y-(self.map.y-300), f'({self.x}, {self.y})', (255, 0, 0))
 
     def attack(self):
         pass
