@@ -13,7 +13,7 @@ class Building:
         pass
 
     def draw(self):
-        self.image.clip_draw(0, 0, 160, 250, self.x-(self.map.x), self.y-(self.map.y))
+        self.image.clip_draw(0, 0, 160, 250, self.x-(self.map.x), self.y-(self.map.y)+125)
         self.font.draw(100, 400, f'({self.x}, {self.y})', (0, 0, 0))
 
     def clear(self):
