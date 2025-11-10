@@ -1,4 +1,4 @@
-from pico2d import load_image, get_time, load_font
+from pico2d import *
 from sdl2 import *
 
 import game_world
@@ -197,6 +197,10 @@ class Player:
     def draw(self):
         self.state_machine.draw()
         self.font.draw(self.w_x - 50, self.w_y + 50, f'({self.w_x}, {self.w_y})', (0, 0, 0))
+        draw_rectangle(*self.get_bb())
 
     def attack(self):
         pass
+
+    def get_bb(self):   # 충돌체크용 바운딩 박스, left, bottom, right, top 순서로 반환
+        return self.w_x - 10, self.w_y - 5, self.w_x + 10, self.w_y + 20

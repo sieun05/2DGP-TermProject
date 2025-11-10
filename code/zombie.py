@@ -1,4 +1,4 @@
-from pico2d import load_image, get_time, load_font
+from pico2d import *
 from sdl2 import *
 import random
 
@@ -64,9 +64,16 @@ class Zombie:
     def draw(self):
         self.state_machine.draw()
         self.font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.x}, {self.y})', (255, 0, 0))
+        draw_rectangle(*self.get_bb())
 
     def attack(self):
         pass
 
     def goto(self):
         pass
+
+    def get_bb(self):
+        return (self.x - (self.map.x) - 15, self.y - (self.map.y) - 15,
+                self.x - (self.map.x) + 15, self.y - (self.map.y) + 15)
+
+    # self.zombie.x - (self.zombie.map.x), self.zombie.y - (self.zombie.map.y)
