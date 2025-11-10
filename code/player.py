@@ -204,3 +204,6 @@ class Player:
 
     def get_bb(self):   # 충돌체크용 바운딩 박스, left, bottom, right, top 순서로 반환
         return self.w_x - 10, self.w_y - 5, self.w_x + 10, self.w_y + 20
+
+    def handle_collisions(self, key, other):
+        pass

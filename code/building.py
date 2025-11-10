@@ -25,3 +25,6 @@ class Building:
                 self.x-(self.map.x) + 80, self.y-(self.map.y) + 100)
 
     # self.x-(self.map.x), self.y-(self.map.y)+125
+
+    def handle_collisions(self, key, other):
+        pass
