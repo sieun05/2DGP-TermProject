@@ -17,7 +17,8 @@ def remove_object(o):
 def update():
     for layer in world:
         # 여기부분 layer 안에 object들의 y값을 기준으로 내림차순 정렬
-        
+        layer.sort(key=lambda obj: obj.y, reverse=True)
+
         for o in layer:
             o.update()
 
