@@ -57,9 +57,9 @@ class Idle:
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 100, 300, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 300, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 100, 200, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 200, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
 
 
 class Run:
@@ -107,11 +107,11 @@ class Run:
                 (self.player.dir_x < 0 and self.player.map.x >= 2400 - 800)):
                 self.player.map.x += dis_x
             else:
-                self.player.x += dis_x
+                self.player.w_x += dis_x
         else:
-            if ((self.player.dir_x > 0 and self.player.x <=400) or
-                (self.player.dir_x < 0 and self.player.x >=400)):
-                self.player.x += dis_x
+            if ((self.player.dir_x > 0 and self.player.w_x <=400) or
+                (self.player.dir_x < 0 and self.player.w_x >=400)):
+                self.player.w_x += dis_x
             else:
                 self.player.map.x += dis_x
 
@@ -126,11 +126,11 @@ class Run:
                     (self.player.dir_y < 0 and self.player.map.y >= 1800 - 600)):
                 self.player.map.y += dis_y
             else:
-                self.player.y += dis_y
+                self.player.w_y += dis_y
         else:
-            if ((self.player.dir_y > 0 and self.player.y <= 300) or
-                    (self.player.dir_y < 0 and self.player.y >= 300)):
-                self.player.y += dis_y
+            if ((self.player.dir_y > 0 and self.player.w_y <= 300) or
+                    (self.player.dir_y < 0 and self.player.w_y >= 300)):
+                self.player.w_y += dis_y
             else:
                 self.player.map.y += dis_y
 
@@ -139,25 +139,25 @@ class Run:
             elif self.player.map.y > 1800 - 600:
                 self.player.map.y = 1800 - 600
 
-        if self.player.x < 0:
-            self.player.x = 0
-        elif self.player.x > 800:
-            self.player.x = 800
-        if self.player.y < 0:
-            self.player.y = 0
-        elif self.player.y > 600:
-            self.player.y = 600
+        if self.player.w_x < 0:
+            self.player.w_x = 0
+        elif self.player.w_x > 800:
+            self.player.w_x = 800
+        if self.player.w_y < 0:
+            self.player.w_y = 0
+        elif self.player.w_y > 600:
+            self.player.w_y = 600
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
 
 
 class Player:
     def __init__(self, map):
-        self.x, self.y = 400, 300
+        self.w_x, self.w_y = 400, 300
         self.frame = 0
         self.face_dir_x = 1
         self.face_dir_y = 1
@@ -166,6 +166,8 @@ class Player:
         self.map = map
         self.image = load_image('images/img.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
+
+        self.x, self.y = self.w_x+ self.map.x, self.w_y + self.map.y
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
@@ -181,6 +183,8 @@ class Player:
         )
 
     def update(self):
+        self.x, self.y = self.w_x+self.map.x, self.w_y + self.map.y
+
         self.state_machine.update()
         # RUN 상태에서 모든 방향키가 떼졌는지 확인하고 IDLE로 전환
         if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
@@ -192,7 +196,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x - 50, self.y + 50, f'({self.x}, {self.y})', (0, 0, 0))
+        self.font.draw(self.w_x - 50, self.w_y + 50, f'({self.w_x}, {self.w_y})', (0, 0, 0))
 
     def attack(self):
         pass
