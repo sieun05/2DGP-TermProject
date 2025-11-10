@@ -2,6 +2,7 @@ from pico2d import load_image, get_time, load_font
 from sdl2 import *
 
 import game_world
+import game_framework  # 수정: from code import game_framework → import game_framework
 from state_machine import StateMachine
 from map import Map
 
@@ -26,6 +27,18 @@ def d_up(e):
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+# player 속도
+PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
+RUN_SPEED_KMPH = 15.0  # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
+
 class Idle:
     def __init__(self, player):
         # player 인스턴스를 명시적으로 받아 참조하도록 수정
@@ -40,14 +53,13 @@ class Idle:
             self.player.attack()
 
     def do(self):
-        self.player.frame = (self.player.frame + 1) % 8
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
     def draw(self):
-        # self.boy는 정의되어 있지 않아 경고/오류를 유발하므로 player 좌표로 변경
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 100, 300, 100, 100, self.player.x, self.player.y, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 300, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(self.player.frame * 100, 200, 100, 100, self.player.x, self.player.y, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 200, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
 
 
 class Run:
@@ -85,21 +97,23 @@ class Run:
             self.player.attack()
 
     def do(self):
-        self.player.frame = (self.player.frame + 1) % 8
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+
+        dis_x = self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
+        dis_y = self.player.dir_y * RUN_SPEED_PPS * game_framework.frame_time
 
         if (self.player.map.x <= 0 or self.player.map.x >= 2400 - 800):
-
             if ((self.player.dir_x > 0 and self.player.map.x <= 0) or
                 (self.player.dir_x < 0 and self.player.map.x >= 2400 - 800)):
-                self.player.map.x += self.player.dir_x * 1
+                self.player.map.x += dis_x
             else:
-                self.player.x += self.player.dir_x * 1
+                self.player.x += dis_x
         else:
             if ((self.player.dir_x > 0 and self.player.x <=400) or
                 (self.player.dir_x < 0 and self.player.x >=400)):
-                self.player.x += self.player.dir_x * 1
+                self.player.x += dis_x
             else:
-                self.player.map.x += self.player.dir_x * 1
+                self.player.map.x += dis_x
 
             if self.player.map.x < 0:
                 self.player.map.x = 0
@@ -110,15 +124,15 @@ class Run:
 
             if ((self.player.dir_y > 0 and self.player.map.y <= 0) or
                     (self.player.dir_y < 0 and self.player.map.y >= 1800 - 600)):
-                self.player.map.y += self.player.dir_y * 1
+                self.player.map.y += dis_y
             else:
-                self.player.y += self.player.dir_y * 1
+                self.player.y += dis_y
         else:
             if ((self.player.dir_y > 0 and self.player.y <= 300) or
                     (self.player.dir_y < 0 and self.player.y >= 300)):
-                self.player.y += self.player.dir_y * 1
+                self.player.y += dis_y
             else:
-                self.player.map.y += self.player.dir_y * 1
+                self.player.map.y += dis_y
 
             if self.player.map.y < 0:
                 self.player.map.y = 0
@@ -136,9 +150,9 @@ class Run:
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 100, 100, 100, 100, self.player.x, self.player.y, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(self.player.frame * 100, 0, 100, 100, self.player.x, self.player.y, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100, int(self.player.x), int(self.player.y), 90, 90)
 
 
 class Player:

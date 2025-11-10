@@ -14,9 +14,10 @@ def remove_object(o):
 
     raise Exception("World 에 존재하지 않는 오브젝트를 지우려고 시도함")
 
-
 def update():
     for layer in world:
+        # 여기부분 layer 안에 object들의 y값을 기준으로 내림차순 정렬
+        
         for o in layer:
             o.update()
 
