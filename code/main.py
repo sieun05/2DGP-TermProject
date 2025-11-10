@@ -1,7 +1,9 @@
 from pico2d import *
+import sys
+import os
 import game_framework
-import logo_mode
-import play_mode
+from mode import logo_mode, play_mode
+
 
 open_canvas()
 game_framework.run(play_mode)

@@ -1,6 +1,10 @@
 from pico2d import *
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 import game_framework
-import lobby_mode
+from . import lobby_mode
 
 image = None
 

@@ -1,6 +1,10 @@
 from pico2d import *
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 import game_framework
-import play_mode
+from . import play_mode
 
 image = None
 

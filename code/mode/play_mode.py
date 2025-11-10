@@ -1,7 +1,10 @@
 from pico2d import *
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-import title_mode
+from . import title_mode
 from map import Map
 from player import Player
 # from grass import Grass

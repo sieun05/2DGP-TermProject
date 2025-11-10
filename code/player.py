@@ -1,4 +1,4 @@
-from pico2d import load_image, get_time
+from pico2d import load_image, get_time, load_font
 from sdl2 import *
 
 import game_world
@@ -87,15 +87,18 @@ class Run:
     def do(self):
         self.player.frame = (self.player.frame + 1) % 8
 
-        if self.player.x > 800 - 30 or self.player.map.x <= 0:
-            self.player.x += self.player.dir_x * 1
-        else:
-            self.player.map.x += self.player.dir_x * 1
 
-        if self.player.y > 600 - 30 or self.player.map.y <= 0:
+
+        if ((self.player.y > 300 - 30 and self.player.y < 300 + 30)):
             self.player.y += self.player.dir_y * 1
+            if (self.player.map.y <= 0 or self.player.map.y >= 1800):
+                self.player.map.y += self.player.dir_y * 1
         else:
             self.player.map.y += self.player.dir_y * 1
+            if self.player.map.y < 0:
+                self.player.map.y = 0
+            elif self.player.map.y > 1800:
+                self.player.map.y = 1800
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
@@ -114,6 +117,7 @@ class Player:
         self.dir_y = 0
         self.map = map
         self.image = load_image('images/img.png')
+        self.font = load_font('images/ENCR10B.TTF', 16)
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
@@ -140,6 +144,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
+        self.font.draw(self.x - 50, self.y + 50, f'({self.x}, {self.y})', (255, 255, 0))
 
     def attack(self):
         pass
