@@ -11,6 +11,7 @@ from player import Player
 # from grass import Grass
 import game_world
 from zombie import Zombie
+from building import Building
 
 def handle_events():
     event_list = get_events()
@@ -34,6 +35,9 @@ def init():
 
     zombies = [Zombie(map) for _ in range(10)]
     game_world.add_objects(zombies, 1)
+
+    building = Building(map, 400, 300)
+    game_world.add_object(building, 1)
 
     pass
 
