@@ -78,5 +78,5 @@ class Zombie:
 
     # self.zombie.x - (self.zombie.map.x), self.zombie.y - (self.zombie.map.y)
 
-    def handle_collisions(self, key, other):
+    def handle_collision(self, key, other):
         pass

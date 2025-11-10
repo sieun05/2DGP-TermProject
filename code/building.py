@@ -26,5 +26,9 @@ class Building:
 
     # self.x-(self.map.x), self.y-(self.map.y)+125
 
-    def handle_collisions(self, key, other):
+    def handle_collision(self, key, other):
+        # if key == "player:building":
+        #     print(f"Player collided with Building at ({other.x}, {other.y})")
+        # elif key == "player:zombie":
+        #     print(f"Player collided with Zombie at ({other.x}, {other.y})")
         pass

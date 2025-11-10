@@ -205,5 +205,8 @@ class Player:
     def get_bb(self):   # 충돌체크용 바운딩 박스, left, bottom, right, top 순서로 반환
         return self.w_x - 10, self.w_y - 5, self.w_x + 10, self.w_y + 20
 
-    def handle_collisions(self, key, other):
-        pass
+    def handle_collision(self, key, other):
+        if key == "player:building":
+            print(f"Player collided with Building at ({other.x}, {other.y})")
+        elif key == "player:zombie":
+            print(f"Player collided with Zombie at ({other.x}, {other.y})")
