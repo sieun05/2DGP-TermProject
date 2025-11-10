@@ -33,13 +33,22 @@ def init():
     player = Player(map)
     game_world.add_object(player, 1)
 
+    game_world.add_collision_pair("player:zombie", player, None)
+    game_world.add_collision_pair("player:building", player, None)
+    game_world.add_collision_pair("zombie:building", None, None)
+
     zombies = [Zombie(map) for _ in range(10)]
     game_world.add_objects(zombies, 1)
+    for zombie in zombies:
+        game_world.add_collision_pair("player:zombie", None, zombie)
+        game_world.add_collision_pair("zombie:building", zombie, None)
 
-    building = Building(map, 400, 300)
-    game_world.add_object(building, 1)
-
-    pass
+    buildings = [Building(map, 400, 300)]
+    game_world.add_objects(buildings, 1)
+    for building in buildings:
+        game_world.add_collision_pair("player:building", None, building)
+        for zombie in zombies:
+            game_world.add_collision_pair("zombie:building", None, building)
 
 def finish():
     game_world.clear()
@@ -47,6 +56,7 @@ def finish():
 
 def update():
     game_world.update()
+    game_world.handle_collisions()
     pass
 
 def draw():
