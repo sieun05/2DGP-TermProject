@@ -22,15 +22,15 @@ class Idle:
 
     def draw(self):
 
-        if (self.zombie.x - 400 < self.zombie.x and self.zombie.x + 400 > self.zombie.x and
-            self.zombie.y - 300 < self.zombie.y and self.zombie.y + 300 > self.zombie.y):
+        if (self.zombie.map.x - 100 < self.zombie.x and self.zombie.map.x + 900 > self.zombie.x and
+            self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.face_dir_x == 1:  # right
                 self.zombie.image.clip_draw(self.zombie.frame * 100, 300, 100, 100,
-                                            self.zombie.x-(self.zombie.map.x-400), self.zombie.y-(self.zombie.map.y-300))
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y))
             else:  # face_dir == -1: # left
                 self.zombie.image.clip_draw(self.zombie.frame * 100, 200, 100, 100,
-                                            self.zombie.x-(self.zombie.map.x-400), self.zombie.y-(self.zombie.map.y-300))
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y))
 
 
 class Zombie:
@@ -63,7 +63,7 @@ class Zombie:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x-(self.map.x-400), self.y-(self.map.y-300), f'({self.x}, {self.y})', (255, 0, 0))
+        self.font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.x}, {self.y})', (255, 0, 0))
 
     def attack(self):
         pass
