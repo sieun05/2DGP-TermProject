@@ -18,7 +18,7 @@ class Idle:
         pass
 
     def do(self):
-        self.zombie.frame = (self.zombie.frame + 1) % 8
+        self.zombie.frame = (self.zombie.frame + 1) % 4
 
     def draw(self):
 
@@ -26,11 +26,11 @@ class Idle:
             self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.face_dir_x == 1:  # right
-                self.zombie.image.clip_draw(self.zombie.frame * 100, 300, 100, 100,
-                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y))
+                self.zombie.image.clip_draw(self.zombie.frame * 70, 910, 70, 70,
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
             else:  # face_dir == -1: # left
-                self.zombie.image.clip_draw(self.zombie.frame * 100, 200, 100, 100,
-                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y))
+                self.zombie.image.clip_draw(self.zombie.frame * 70, 630, 70, 70,
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
 
 
 class Zombie:
@@ -41,7 +41,7 @@ class Zombie:
         self.dir_y = 0
         self.face_dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.map = map
-        self.image = load_image('images/img.png')
+        self.image = load_image('images/1.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달

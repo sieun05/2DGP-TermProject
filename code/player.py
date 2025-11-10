@@ -45,9 +45,9 @@ class Idle:
     def draw(self):
         # self.boy는 정의되어 있지 않아 경고/오류를 유발하므로 player 좌표로 변경
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 100, 300, 100, 100, self.player.x, self.player.y)
+            self.player.image.clip_draw(self.player.frame * 100, 300, 100, 100, self.player.x, self.player.y, 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(self.player.frame * 100, 200, 100, 100, self.player.x, self.player.y)
+            self.player.image.clip_draw(self.player.frame * 100, 200, 100, 100, self.player.x, self.player.y, 90, 90)
 
 
 class Run:
@@ -136,9 +136,9 @@ class Run:
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 100, 100, 100, 100, self.player.x, self.player.y)
+            self.player.image.clip_draw(self.player.frame * 100, 100, 100, 100, self.player.x, self.player.y, 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(self.player.frame * 100, 0, 100, 100, self.player.x, self.player.y)
+            self.player.image.clip_draw(self.player.frame * 100, 0, 100, 100, self.player.x, self.player.y, 90, 90)
 
 
 class Player:
