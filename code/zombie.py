@@ -9,7 +9,7 @@ from map import Map
 
 # zombie Run Speed
 PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
-RUN_SPEED_KMPH = 12.0  # Km / Hour
+RUN_SPEED_KMPH = 17.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
