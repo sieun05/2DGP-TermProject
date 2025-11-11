@@ -5,6 +5,7 @@ import game_world
 import game_framework  # 수정: from code import game_framework → import game_framework
 from state_machine import StateMachine
 from map import Map
+from gun import Gun
 
 def w_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w
@@ -26,6 +27,9 @@ def d_up(e):
 
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
+def space_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_SPACE
 
 # player 속도
 PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
@@ -179,6 +183,8 @@ class Player:
 
         self.x, self.y = self.w_x+ self.map.x, self.w_y + self.map.y
 
+        self.gun_delay_timer = get_time()
+
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -202,6 +208,14 @@ class Player:
         if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
             self.state_machine.cur_state = self.IDLE
             self.IDLE.enter(('STOP', None))
+
+
+        if get_time() - self.gun_delay_timer > 0.3:
+            self.gun_delay_timer = get_time()
+
+            gun = Gun(self.map, self.x, self.y, self.x + 300, self.y + 300)
+            game_world.add_object(gun, 1)
+
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
