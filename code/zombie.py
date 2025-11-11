@@ -9,7 +9,7 @@ from map import Map
 
 # zombie Run Speed
 PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
-RUN_SPEED_KMPH = 17.0  # Km / Hour
+RUN_SPEED_KMPH = 13.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -65,8 +65,6 @@ class Zombie:
     def __init__(self, map, player):
         self.x, self.y = random.randint(0, 2400), random.randint(0, 1800)
         self.frame = 0
-        self.dir_x = 0
-        self.dir_y = 0
         self.face_dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.map = map
         self.player = player
@@ -92,9 +90,7 @@ class Zombie:
 
     def update(self):
         self.state_machine.update()
-        '''if self.dir_x == 0 and self.dir_y == 0:
-            self.state_machine.cur_state = self.IDLE
-            self.IDLE.enter(('STOP', None))'''
+
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
@@ -121,3 +117,10 @@ class Zombie:
             pass
         elif key == "zombie:building":
             self.building_crash_flag = True
+        elif key == "zombie:zombie":
+            if self.x < other.x:
+                self.x -= 0.2
+            if self.y < other.y:
+                self.y -= 0.2
+
+            print(f"Zombie collided with Zombie at ({other.x}, {other.y})")

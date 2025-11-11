@@ -40,7 +40,7 @@ def init():
 
     zombies = [Zombie(map, player) for _ in range(10)]
     game_world.add_objects(zombies, 1)
-    for i, zombie in zombies:
+    for i, zombie in enumerate(zombies):
         game_world.add_collision_pair("player:zombie", None, zombie)
         game_world.add_collision_pair("zombie:building", zombie, None)
         for other_zombie in zombies[i+1:]:
