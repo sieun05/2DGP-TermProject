@@ -37,7 +37,7 @@ def init():
     game_world.add_collision_pair("player:building", player, None)
     game_world.add_collision_pair("zombie:building", None, None)
 
-    zombies = [Zombie(map) for _ in range(10)]
+    zombies = [Zombie(map, player) for _ in range(10)]
     game_world.add_objects(zombies, 1)
     for zombie in zombies:
         game_world.add_collision_pair("player:zombie", None, zombie)

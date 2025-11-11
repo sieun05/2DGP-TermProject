@@ -3,8 +3,21 @@ from sdl2 import *
 import random
 
 import game_world
+import game_framework
 from state_machine import StateMachine
 from map import Map
+
+# zombie Run Speed
+PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
+RUN_SPEED_KMPH = 12.0  # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# zombie Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 4
 
 class Idle:
     def __init__(self, zombie):
@@ -20,6 +33,21 @@ class Idle:
     def do(self):
         self.zombie.frame = (self.zombie.frame + 1) % 4
 
+        if (self.zombie.t < 1.0 and
+                (self.zombie.tx == self.zombie.player.x and self.zombie.ty == self.zombie.player.y)):
+            self.zombie.t += RUN_SPEED_PPS * game_framework.frame_time / self.zombie.distance
+            self.zombie.x = (1-self.zombie.t) * self.zombie.sx + self.zombie.t * self.zombie.tx
+            self.zombie.y = (1-self.zombie.t) * self.zombie.sy + self.zombie.t * self.zombie.ty
+        else:
+            self.zombie.sx, self.zombie.sy = self.zombie.x, self.zombie.y
+            self.zombie.tx, self.zombie.ty = self.zombie.player.x, self.zombie.player.y
+            self.zombie.t = 0.0
+            self.zombie.distance = math.sqrt((self.zombie.tx - self.zombie.x) ** 2 + (self.zombie.ty - self.zombie.y) ** 2)
+
+            self.zombie.t += RUN_SPEED_PPS * game_framework.frame_time / self.zombie.distance
+            self.zombie.x = (1 - self.zombie.t) * self.zombie.sx + self.zombie.t * self.zombie.tx
+            self.zombie.y = (1 - self.zombie.t) * self.zombie.sy + self.zombie.t * self.zombie.ty
+
     def draw(self):
 
         if (self.zombie.map.x - 100 < self.zombie.x and self.zombie.map.x + 900 > self.zombie.x and
@@ -34,15 +62,25 @@ class Idle:
 
 
 class Zombie:
-    def __init__(self, map):
+    def __init__(self, map, player):
         self.x, self.y = random.randint(0, 2400), random.randint(0, 1800)
         self.frame = 0
         self.dir_x = 0
         self.dir_y = 0
         self.face_dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.map = map
+        self.player = player
         self.image = load_image('images/1.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
+
+
+        self.t=0.0
+        self.sx, self.sy = self.x, self.y       # start x, y
+        self.tx, self.ty = self.player.x, self.player.y       # target
+
+        self.distance = math.sqrt((self.tx - self.x) ** 2 + (self.ty - self.y) ** 2)
+
+        self.building_crash_flag = False
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
@@ -79,4 +117,7 @@ class Zombie:
     # self.zombie.x - (self.zombie.map.x), self.zombie.y - (self.zombie.map.y)
 
     def handle_collision(self, key, other):
-        pass
+        if key == "player:zombie":
+            pass
+        elif key == "zombie:building":
+            self.building_crash_flag = True
