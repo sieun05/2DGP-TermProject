@@ -126,6 +126,7 @@ class Run:
             elif self.player.map.x > 2400 - 800:
                 self.player.map.x = 2400 - 800
 
+
         if (self.player.map.y <= 0 or self.player.map.y >= 1800 - 600):
 
             if ((self.player.dir_y > 0 and self.player.map.y <= 0) or
@@ -156,9 +157,11 @@ class Run:
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100,
+                                        int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
         else:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
+            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100,
+                                        int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
 
 
 class Player:
@@ -168,7 +171,7 @@ class Player:
         self.dir_x, self.dir_y = 0, 0
         self.frame = 0
 
-        self.stop_flag = False
+        self.building_crash_flag = False
 
         self.map = map
         self.image = load_image('images/img.png')
@@ -190,10 +193,10 @@ class Player:
         )
 
     def update(self):
-        self.x, self.y = self.w_x+self.map.x, self.w_y + self.map.y
+        self.x, self.y = self.w_x + self.map.x, self.w_y + self.map.y
 
         self.state_machine.update()
-        self.stop_flag = False
+        self.building_crash_flag = False
 
         # RUN 상태에서 모든 방향키가 떼졌는지 확인하고 IDLE로 전환
         if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
@@ -216,7 +219,15 @@ class Player:
 
     def handle_collision(self, key, other):
         if key == "player:building":
-            self.stop_flag = True
+
+            if self.x + 10 >= (other.x - 80) or self.x - 10 <= (other.x + 80):
+                self.w_x -= self.dir_x * 1
+                print(f"x")
+            if self.y + 5 >= (other.y) or self.y - 20 <= (other.y + 100):
+                self.w_y -= self.dir_y * 1
+                print(f"y")
+
+            self.building_crash_flag = True
 
             print(f"Player collided with Building at ({other.x}, {other.y})")
         elif key == "player:zombie":
