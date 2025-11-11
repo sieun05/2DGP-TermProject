@@ -122,5 +122,4 @@ class Zombie:
                 self.x -= 0.2
             if self.y < other.y:
                 self.y -= 0.2
-
-            print(f"Zombie collided with Zombie at ({other.x}, {other.y})")
+            # print(f"Zombie collided with Zombie at ({other.x}, {other.y})")
