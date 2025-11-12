@@ -3,6 +3,7 @@ from sdl2 import *
 
 import game_world
 import game_framework  # 수정: from code import game_framework → import game_framework
+from code import zombie
 from state_machine import StateMachine
 from map import Map
 from gun import Gun
@@ -38,10 +39,14 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-# Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
+
+# 발사율 설정: 20발/초
+BULLETS_PER_SECOND = 20.0
+BULLET_COOLDOWN = 1.0 / BULLETS_PER_SECOND
+
 
 class Idle:
     def __init__(self, player):
@@ -177,6 +182,9 @@ class Player:
 
         self.building_crash_flag = False
 
+        self.gun_tx = 0
+        self.gun_ty = 0
+
         self.map = map
         self.image = load_image('images/img.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
@@ -209,16 +217,21 @@ class Player:
             self.state_machine.cur_state = self.IDLE
             self.IDLE.enter(('STOP', None))
 
-
-        if get_time() - self.gun_delay_timer > 0.3:
-            self.gun_delay_timer = get_time()
-
-            gun = Gun(self.map, self.x, self.y, self.x + 300, self.y + 300)
+        self.gun_delay_timer += game_framework.frame_time
+        while self.gun_delay_timer >= BULLET_COOLDOWN:
+            self.gun_delay_timer -= BULLET_COOLDOWN
+            gun = Gun(self.map, self.x + self.face_dir_x * 5, self.y + 25, self.gun_tx, self.gun_ty)
             game_world.add_object(gun, 1)
-
+            game_world.add_collision_pair("zombie:gun", None, gun)
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
+
+        # print(f"Mouse x, y at ({event.x}, {event.y})")
+
+        if event.x is not None and event.y is not None:
+            self.gun_tx = event.x + self.map.x
+            self.gun_ty = (600-event.y) + self.map.y
 
     def draw(self):
         self.state_machine.draw()

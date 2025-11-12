@@ -42,8 +42,5 @@ class Gun:
                 self.x-(self.map.x) + 5, self.y-(self.map.y) + 5)
 
     def handle_collision(self, key, other):
-        # if key == "player:building":
-        #     print(f"Player collided with Building at ({other.x}, {other.y})")
-        # elif key == "player:zombie":
-        #     print(f"Player collided with Zombie at ({other.x}, {other.y})")
-        pass
+        if key == "zombie:gun":
+            game_world.remove_object(self)
