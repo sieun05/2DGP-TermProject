@@ -71,6 +71,7 @@ class Zombie:
         self.image = load_image('images/1.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
 
+        self.heart = 100
 
         self.t=0.0
         self.sx, self.sy = self.x, self.y       # start x, y
@@ -97,7 +98,7 @@ class Zombie:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.x}, {self.y})', (255, 0, 0))
+        self.font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.heart})', (255, 0, 0))
         draw_rectangle(*self.get_bb())
 
     def attack(self):
@@ -123,3 +124,8 @@ class Zombie:
             if self.y < other.y:
                 self.y -= 0.2
             # print(f"Zombie collided with Zombie at ({other.x}, {other.y})")
+        elif key == "zombie:gun":
+            self.heart -= 5
+
+            if self.heart <= 0:
+                game_world.remove_object(self)
