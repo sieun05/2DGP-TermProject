@@ -12,6 +12,8 @@ from player import Player
 import game_world
 from zombie import Zombie
 from building import Building
+from map_data import building_list
+
 
 def handle_events():
     event_list = get_events()
@@ -39,7 +41,7 @@ def init():
     game_world.add_collision_pair("zombie:zombie", None, None)
     game_world.add_collision_pair("zombie:gun", None, None)
 
-    zombies = [Zombie(map, player) for _ in range(10)]
+    zombies = [Zombie(map, player) for _ in range(3)]
     game_world.add_objects(zombies, 1)
     for i, zombie in enumerate(zombies):
         game_world.add_collision_pair("player:zombie", None, zombie)
@@ -48,7 +50,7 @@ def init():
         for other_zombie in zombies[i+1:]:
             game_world.add_collision_pair("zombie:zombie", zombie, other_zombie)
 
-    buildings = [Building(map, 400, 300)]
+    buildings = [Building(map, *building_list[i]) for i in range(len(building_list))]
     game_world.add_objects(buildings, 1)
     for building in buildings:
         game_world.add_collision_pair("player:building", None, building)
