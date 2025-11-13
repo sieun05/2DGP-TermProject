@@ -44,7 +44,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
 
 # 발사율 설정: 20발/초
-BULLETS_PER_SECOND = 15.0
+BULLETS_PER_SECOND = 5.0
 BULLET_COOLDOWN = 1.0 / BULLETS_PER_SECOND
 
 
@@ -248,11 +248,12 @@ class Player:
         if key == "player:building":
 
             if self.x + 10 >= (other.x - 80) or self.x - 10 <= (other.x + 80):
-                self.w_x -= self.dir_x * 1
-                print(f"x")
+                self.w_x -= 2 * self.dir_x * RUN_SPEED_PPS * game_framework.frame_time
+                # self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
+                #print(f"x")
             if self.y + 5 >= (other.y) or self.y - 20 <= (other.y + 100):
-                self.w_y -= self.dir_y * 1
-                print(f"y")
+                self.w_y -= 2 * self.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+                #print(f"y")
 
             self.building_crash_flag = True
 
