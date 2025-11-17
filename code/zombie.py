@@ -207,9 +207,31 @@ class Zombie:
                     self.dir_x = 0
                     self.dir_y = 0
         elif key == "zombie:zombie":
-            if self.y < other.y:
-                self.y -= 0.2
-            # print(f"Zombie collided with Zombie at ({other.x}, {other.y})")
+            # 두 좀비 간의 거리 벡터 계산
+            dx = self.x - other.x
+            dy = self.y - other.y
+
+            # 완전히 같은 위치에 있는 경우 랜덤 방향으로 아주 조금 이동
+            if dx == 0 and dy == 0:
+                angle = random.uniform(0, 2 * math.pi)
+                dx = math.cos(angle) * 0.1
+                dy = math.sin(angle) * 0.1
+
+            # 거리 계산
+            distance = math.sqrt(dx * dx + dy * dy)
+
+            # 바운딩 박스가 실제로 겹치는지만 체크 (반지름 15씩)
+            if distance < 30 and distance > 0:  # 15 + 15 = 30
+                # 정규화된 방향 벡터
+                nx = dx / distance
+                ny = dy / distance
+
+                # 매우 작은 힘으로만 밀어냄 (자연스러운 움직임)
+                push_force = 0.15  # 0.1~0.2 범위의 작은 힘
+
+                # 현재 좀비를 아주 조금 밀어냄
+                self.x += nx * push_force
+                self.y += ny * push_force
         elif key == "zombie:gun":
             self.heart -= 5
 
