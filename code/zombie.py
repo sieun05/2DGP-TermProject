@@ -82,23 +82,41 @@ class Idle:
             self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.dir_x == 1:  # right
-                self.zombie.image.clip_draw(int(self.zombie.frame) * 70, 910, 70, 70,
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 70, 910, 70, 70,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
             else:  # face_dir == -1: # left
-                self.zombie.image.clip_draw(int(self.zombie.frame) * 70, 630, 70, 70,
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 70, 630, 70, 70,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
 
 
 class Zombie:
-    def __init__(self, map, player, x, y):
-        self.x, self.y = x, y
+    # 클래스 변수: 모든 좀비 인스턴스가 공유
+    zombie_image = None
+    zombie_font = None
+
+    @classmethod
+    def load_resources(cls):
+        """클래스 리소스를 로드 (한 번만 실행)"""
+        if cls.zombie_image is None:
+            cls.zombie_image = load_image('images/1.png')
+        if cls.zombie_font is None:
+            cls.zombie_font = load_font('images/ENCR10B.TTF', 16)
+
+    def __init__(self, map, player, x=None, y=None):
+        # 클래스 리소스 로드 (처음 호출시에만 실제로 로드됨)
+        Zombie.load_resources()
+
+        # 위치 설정 (x, y가 주어지지 않으면 랜덤)
+        if x is None or y is None:
+            self.x, self.y = random.randint(0, 2400), random.randint(0, 1800)
+        else:
+            self.x, self.y = x, y
+
         self.frame = 0
         self.dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.dir_y = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.map = map
         self.player = player
-        self.image = load_image('images/1.png')
-        self.font = load_font('images/ENCR10B.TTF', 16)
 
         self.heart = 100
 
@@ -125,7 +143,7 @@ class Zombie:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.heart})', (255, 0, 0))
+        self.zombie_font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.heart})', (255, 0, 0))
         draw_rectangle(*self.get_bb())
 
     def attack(self):
