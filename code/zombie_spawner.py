@@ -14,13 +14,13 @@ class ZombieSpawner:
         self.map = map
         self.player = player
 
-        # 라운드에 따른 스포너 설정
-        self.base_spawn_interval = 3.0  # 기본 소환 간격 (초)
+        # 라운드에 따른 스포너 설정 - 임시로 5초당 1마리로 조정
+        self.base_spawn_interval = 5.0  # 5초 간격으로 변경
         self.base_spawn_count = 1       # 기본 소환 개수
 
-        # 라운드가 증가할수록 더 빨리, 더 많이 소환
-        self.spawn_interval = max(0.5, self.base_spawn_interval - (round - 1) * 0.3)
-        self.spawn_count = self.base_spawn_count + (round - 1) // 2
+        # 임시로 라운드 증가 효과 비활성화
+        self.spawn_interval = self.base_spawn_interval  # 라운드와 무관하게 5초 고정
+        self.spawn_count = self.base_spawn_count        # 라운드와 무관하게 1마리 고정
 
         # 타이머
         self.spawn_timer = 0.0
@@ -29,12 +29,17 @@ class ZombieSpawner:
         # 스포너 활성화 여부
         self.active = True
 
-        # 라운드당 최대 소환 수 (무한 소환 방지)
-        self.max_spawns_per_round = 5 + round * 3
+        # 라운드당 최대 소환 수도 줄임
+        self.max_spawns_per_round = 3 + round  # 누락된 속성 추가
         self.current_spawn_count = 0
 
     def update(self):
         if not self.active or self.current_spawn_count >= self.max_spawns_per_round:
+            return
+
+        # 전체 좀비 수 체크 - 10마리가 되면 생성 중지
+        total_zombies = len(game_world.get_objects_by_type(Zombie))
+        if total_zombies >= 20:
             return
 
         # 소환 타이머 업데이트
@@ -54,9 +59,20 @@ class ZombieSpawner:
         if self.current_spawn_count >= self.max_spawns_per_round:
             return
 
+        # 전체 좀비 수 체크 - 10마리가 되면 생성 중지
+        total_zombies = len(game_world.get_objects_by_type(Zombie))
+        if total_zombies >= 10:
+            print(f"Maximum zombie limit reached: {total_zombies} zombies")
+            return
+
+        # 기존 좀비들 미리 가져오기
+        existing_zombies = game_world.get_objects_by_type(Zombie)
+
         # 이번에 소환할 좀비 수 계산
         zombies_to_spawn = min(self.spawn_count,
                               self.max_spawns_per_round - self.current_spawn_count)
+
+        newly_spawned = []
 
         for i in range(zombies_to_spawn):
             # 스포너 주변 반경 내에서 랜덤 위치에 소환
@@ -75,16 +91,24 @@ class ZombieSpawner:
 
             # 게임 월드에 추가
             game_world.add_object(zombie, 1)
+            newly_spawned.append(zombie)
 
-            # 충돌 처리 등록
+        # 새로 생성된 모든 좀비들의 기본 충돌 등록 (한 번에 처리)
+        for zombie in newly_spawned:
             game_world.add_collision_pair("player:zombie", None, zombie)
             game_world.add_collision_pair("zombie:building", zombie, None)
             game_world.add_collision_pair("zombie:gun", zombie, None)
 
-            # 다른 좀비들과의 충돌 처리
-            for other in game_world.get_objects_by_type(Zombie):
-                if other != zombie:
-                    game_world.add_collision_pair("zombie:zombie", zombie, other)
+        # 좀비끼리의 충돌 등록 (중복 방지)
+        for i, new_zombie in enumerate(newly_spawned):
+            # 새 좀비와 기존 좀비들 간의 충돌
+            for existing_zombie in existing_zombies:
+                game_world.add_collision_pair("zombie:zombie", new_zombie, existing_zombie)
+
+            # 새로 생성된 좀비들끼리의 충돌 (중복 방지: i < j만 등록)
+            for j in range(i + 1, len(newly_spawned)):
+                other_new_zombie = newly_spawned[j]
+                game_world.add_collision_pair("zombie:zombie", new_zombie, other_new_zombie)
 
         self.current_spawn_count += zombies_to_spawn
         print(f"Round {self.round}: Spawned {zombies_to_spawn} zombies at ({self.x}, {self.y})")

@@ -15,6 +15,7 @@ from building import Building
 from map_data import *
 import random
 from car import Car
+from zombie_spawner import ZombieSpawner
 
 
 def handle_events():
@@ -62,11 +63,13 @@ def init():
     game_world.add_objects(buildings, 1)
     for building in buildings:
         game_world.add_collision_pair("player:building", None, building)
-        # for zombie in zombies:
-        #     game_world.add_collision_pair("zombie:building", None, building)
+        game_world.add_collision_pair("zombie:building", None, building)
 
     cars = [Car(map, *car_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(car_list)) if random.randint(0, 8) == 0]
     game_world.add_objects(cars, 1)
+
+    zombie_spawners = [ZombieSpawner(1, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
+    game_world.add_objects(zombie_spawners, 0)
 
 
 def finish():

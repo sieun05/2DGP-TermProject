@@ -83,3 +83,12 @@ def handle_collisions():
                 if collide(a, b):
                     a.handle_collision(key, b)
                     b.handle_collision(key, a)
+
+def get_objects_by_type(object_type):
+    """특정 타입의 오브젝트들을 반환"""
+    objects = []
+    for layer in world:
+        for obj in layer:
+            if isinstance(obj, object_type):
+                objects.append(obj)
+    return objects
