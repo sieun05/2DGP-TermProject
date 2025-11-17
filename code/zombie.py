@@ -1,6 +1,7 @@
 from pico2d import *
 from sdl2 import *
 import random
+import math
 
 import game_world
 import game_framework
@@ -143,33 +144,53 @@ class Zombie:
         if key == "player:zombie":
             pass
         elif key == "zombie:building":
-            # 이전 로직은 dir_x/dir_y 값에 의존하여 충돌 보정이 제대로 되지 않음.
-            # 충돌 시에는 바운딩 박스의 겹침(overlap)을 계산하여 더 작은 축으로 분리(resolution)하도록 변경.
-            left_a, bottom_a, right_a, top_a = self.get_bb()
-            left_b, bottom_b, right_b, top_b = other.get_bb()
+            # World 좌표 기준으로 바운딩 박스 계산
+            left_a = self.x - 15
+            bottom_a = self.y - 15
+            right_a = self.x + 15
+            top_a = self.y + 15
+
+            left_b = other.x - 80
+            bottom_b = other.y
+            right_b = other.x + 80
+            top_b = other.y + 100
 
             overlap_x = min(right_a, right_b) - max(left_a, left_b)
             overlap_y = min(top_a, top_b) - max(bottom_a, bottom_b)
 
-            # 실제로 겹치는 경우에만 처리
             if overlap_x > 0 and overlap_y > 0:
-                # 더 적게 겹치는 축으로 분리
+                # 더 적게 겹친 축으로 분리
                 if overlap_x < overlap_y:
-                    # x축으로 분리
+                    # x축으로 분리: 건물 왼쪽/오른쪽으로 배치
                     if self.x < other.x:
-                        self.x -= (overlap_x + 1)
+                        self.x = left_b - 15
                     else:
-                        self.x += (overlap_x + 1)
-                    # 분리 후 x방향 정지
-                    self.dir_x = 0
+                        self.x = right_b + 15
+                    # x는 고정하고 y축으로만 플레이어 쪽으로 이동시키기 위해 목표 설정
+                    self.sx, self.sy = self.x, self.y
+                    self.tx, self.ty = self.x, self.player.y
                 else:
-                    # y축으로 분리
+                    # y축으로 분리: 건물 아래/위로 배치
                     if self.y < other.y:
-                        self.y -= (overlap_y + 1)
+                        self.y = bottom_b - 15
                     else:
-                        self.y += (overlap_y + 1)
-                    # 분리 후 y방향 정지
+                        self.y = top_b + 15
+                    # y는 고정하고 x축으로만 플레이어 쪽으로 이동시키기 위해 목표 설정
+                    self.sx, self.sy = self.x, self.y
+                    self.tx, self.ty = self.player.x, self.y
+
+                # 이동 파라미터 재설정
+                self.t = 0.0
+                self.distance = math.sqrt((self.tx - self.x) ** 2 + (self.ty - self.y) ** 2)
+
+                if self.distance == 0:
+                    self.dir_x = 0
                     self.dir_y = 0
+                else:
+                    dx = self.tx - self.x
+                    dy = self.ty - self.y
+                    self.dir_x = 1 if dx > 0 else (-1 if dx < 0 else 0)
+                    self.dir_y = 1 if dy > 0 else (-1 if dy < 0 else 0)
         elif key == "zombie:zombie":
             if self.x < other.x:
                 self.x -= 0.2
