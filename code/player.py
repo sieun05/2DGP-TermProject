@@ -67,17 +67,22 @@ class Idle:
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
 
     def draw(self):
+        if self.player.damage_flag:
+            frame_y_sub = 4
+        else:
+            frame_y_sub = 0
+
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 5, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (5 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
         elif self.player.face_dir_x == -1:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 6, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (6 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE,PLAYER_SIZE)
         elif self.player.face_dir_y == -1:  # up
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 7, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (7 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
         else:  # face_dir == -1: # down
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 4, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (4 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
 
 class Run:
@@ -179,17 +184,22 @@ class Run:
             self.player.w_y = 600
 
     def draw(self):
+        if self.player.damage_flag:
+            frame_y_sub = 4
+        else:
+            frame_y_sub = 0
+
         if self.player.dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 5, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (5 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
         elif self.player.dir_x == -1:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 6, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (6 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
         elif self.player.dir_y == -1:  # up
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 7, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (7 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
         else:  # face_dir == -1: # down
-            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 4, 64, 64, int(self.player.w_x),
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * (4 - frame_y_sub), 64, 64, int(self.player.w_x),
                                         int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
 
 class Player:
@@ -209,6 +219,12 @@ class Player:
         self.font = load_font('images/ENCR10B.TTF', 16)
 
         self.x, self.y = self.w_x+ self.map.x, self.w_y + self.map.y
+
+        self.damage_flag = False
+        self.damage_time = 0.0
+        self.heart = 100
+        self.heart_delay_timer = 0.0
+        self.heart_delay_flag = True
 
         self.gun_delay_timer = get_time()
 
@@ -243,6 +259,29 @@ class Player:
             game_world.add_object(gun, 1)
             game_world.add_collision_pair("zombie:gun", None, gun)
 
+        # 데미지 상태 관리 (속도 감소 효과)
+        if self.damage_flag:
+            global RUN_SPEED_PPS
+
+            self.damage_time += game_framework.frame_time
+            if self.damage_time >= 3:
+                self.damage_flag = False
+                run_speed_kmph = 15.0  # Km / Hour
+                run_speed_mpm = (run_speed_kmph * 1000.0 / 60.0)
+                run_speed_mps = (run_speed_mpm / 60.0)
+                RUN_SPEED_PPS = (run_speed_mps * PIXEL_PER_METER)
+            else:
+                run_speed_kmph = 13.0  # Km / Hour
+                run_speed_mpm = (run_speed_kmph * 1000.0 / 60.0)
+                run_speed_mps = (run_speed_mpm / 60.0)
+                RUN_SPEED_PPS = (run_speed_mps * PIXEL_PER_METER)
+
+        # HP 감소 딜레이 관리: 0.5초마다 heart_delay_flag를 True로 재설정
+        self.heart_delay_timer += game_framework.frame_time
+        if self.heart_delay_timer >= 0.5:
+            self.heart_delay_flag = True
+
+
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
 
@@ -254,7 +293,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.w_x - 50, self.w_y + 50, f'({self.w_x}, {self.w_y})', (0, 0, 0))
+        self.font.draw(self.w_x - 50, self.w_y + 50, f'(heart: {self.heart})', (0, 0, 0))
         draw_rectangle(*self.get_bb())
 
     def attack(self):
@@ -278,4 +317,12 @@ class Player:
 
             print(f"Player collided with Building at ({other.x}, {other.y})")
         elif key == "player:zombie":
+            self.damage_flag = True
+            self.damage_time = 0.0
+
+            if self.heart_delay_flag:
+                self.heart_delay_flag = False
+                self.heart_delay_timer = 0.0  # frame_time 기반 누적 타이머로 변경
+                self.heart -= 3  # HP 감소 코드 추가
+
             print(f"Player collided with Zombie at ({other.x}, {other.y})")
