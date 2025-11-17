@@ -128,8 +128,8 @@ class Run:
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
 
          # 이동 거리 계산
-        dis_x = self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
-        dis_y = self.player.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+        dis_x = self.player.dir_x * self.player.run_speed_pps * game_framework.frame_time
+        dis_y = self.player.dir_y * self.player.run_speed_pps * game_framework.frame_time
 
         new_x = self.player.w_x
         new_y = self.player.w_y
@@ -226,7 +226,10 @@ class Player:
         self.heart_delay_timer = 0.0
         self.heart_delay_flag = True
 
-        self.gun_delay_timer = get_time()
+        self.gun_delay_timer = 0.0  # get_time() 대신 0.0으로 초기화
+
+        # 인스턴스 변수로 속도 관리
+        self.run_speed_pps = RUN_SPEED_PPS
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
@@ -253,28 +256,26 @@ class Player:
             self.IDLE.enter(('STOP', None))
 
         self.gun_delay_timer += game_framework.frame_time
-        while self.gun_delay_timer >= BULLET_COOLDOWN:
-            self.gun_delay_timer -= BULLET_COOLDOWN
+        if self.gun_delay_timer >= BULLET_COOLDOWN:
+            self.gun_delay_timer = 0.0  # 타이머를 0으로 리셋
             gun = Gun(self.map, self.x + self.face_dir_x * 5, self.y + 25, self.gun_tx, self.gun_ty)
             game_world.add_object(gun, 1)
             game_world.add_collision_pair("zombie:gun", None, gun)
 
         # 데미지 상태 관리 (속도 감소 효과)
         if self.damage_flag:
-            global RUN_SPEED_PPS
-
             self.damage_time += game_framework.frame_time
             if self.damage_time >= 3:
                 self.damage_flag = False
                 run_speed_kmph = 15.0  # Km / Hour
                 run_speed_mpm = (run_speed_kmph * 1000.0 / 60.0)
                 run_speed_mps = (run_speed_mpm / 60.0)
-                RUN_SPEED_PPS = (run_speed_mps * PIXEL_PER_METER)
+                self.run_speed_pps = (run_speed_mps * PIXEL_PER_METER)
             else:
                 run_speed_kmph = 13.0  # Km / Hour
                 run_speed_mpm = (run_speed_kmph * 1000.0 / 60.0)
                 run_speed_mps = (run_speed_mpm / 60.0)
-                RUN_SPEED_PPS = (run_speed_mps * PIXEL_PER_METER)
+                self.run_speed_pps = (run_speed_mps * PIXEL_PER_METER)
 
         # HP 감소 딜레이 관리: 0.5초마다 heart_delay_flag를 True로 재설정
         self.heart_delay_timer += game_framework.frame_time
@@ -331,11 +332,11 @@ class Player:
         if key == "player:building":
 
             if self.x + 10 >= (other.x - 80) or self.x - 10 <= (other.x + 80):
-                self.w_x -= 2 * self.dir_x * RUN_SPEED_PPS * game_framework.frame_time
+                self.w_x -= 2 * self.dir_x * self.run_speed_pps * game_framework.frame_time
                 # self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
                 #print(f"x")
             if self.y + 5 >= (other.y) or self.y - 20 <= (other.y + 100):
-                self.w_y -= 2 * self.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+                self.w_y -= 2 * self.dir_y * self.run_speed_pps * game_framework.frame_time
                 #print(f"y")
 
             self.building_crash_flag = True
@@ -368,7 +369,10 @@ class Player:
         self.heart_delay_timer = 0.0
         self.heart_delay_flag = True
 
-        self.gun_delay_timer = get_time()
+        self.gun_delay_timer = 0.0  # get_time() 대신 0.0으로 초기화
+
+        # 속도도 초기값으로 리셋
+        self.run_speed_pps = RUN_SPEED_PPS
 
         # 상태 머신을 IDLE로 초기화
         self.state_machine.cur_state = self.IDLE
