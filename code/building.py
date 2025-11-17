@@ -2,8 +2,11 @@ from pico2d import *
 from sdl2 import *
 
 class Building:
-    def __init__(self, map, x, y):
-        self.image = load_image('images/building.png')
+    def __init__(self, map, x, y, num):
+        if num == 0:
+            self.image = load_image('images/building.png')
+        elif num == 1:
+            self.image = load_image('images/building2.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
         self.x = x
         self.y = y
