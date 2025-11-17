@@ -166,34 +166,29 @@ class Zombie:
                         self.x = left_b - 15
                     else:
                         self.x = right_b + 15
-                    # x는 고정하고 y축으로만 플레이어 쪽으로 이동시키기 위해 목표 설정
-                    self.sx, self.sy = self.x, self.y
-                    self.tx, self.ty = self.x, self.player.y
                 else:
                     # y축으로 분리: 건물 아래/위로 배치
                     if self.y < other.y:
                         self.y = bottom_b - 15
                     else:
                         self.y = top_b + 15
-                    # y는 고정하고 x축으로만 플레이어 쪽으로 이동시키기 위해 목표 설정
-                    self.sx, self.sy = self.x, self.y
-                    self.tx, self.ty = self.player.x, self.y
 
-                # 이동 파라미터 재설정
+                # 충돌 후 새로운 경로 설정: 항상 플레이어를 향하도록 함
+                self.sx, self.sy = self.x, self.y
+                self.tx, self.ty = self.player.x, self.player.y
                 self.t = 0.0
                 self.distance = math.sqrt((self.tx - self.x) ** 2 + (self.ty - self.y) ** 2)
 
-                if self.distance == 0:
-                    self.dir_x = 0
-                    self.dir_y = 0
-                else:
+                # 방향 업데이트
+                if self.distance > 0:
                     dx = self.tx - self.x
                     dy = self.ty - self.y
                     self.dir_x = 1 if dx > 0 else (-1 if dx < 0 else 0)
                     self.dir_y = 1 if dy > 0 else (-1 if dy < 0 else 0)
+                else:
+                    self.dir_x = 0
+                    self.dir_y = 0
         elif key == "zombie:zombie":
-            if self.x < other.x:
-                self.x -= 0.2
             if self.y < other.y:
                 self.y -= 0.2
             # print(f"Zombie collided with Zombie at ({other.x}, {other.y})")
