@@ -146,3 +146,20 @@ class ZombieSpawner:
         # 타이머 리셋
         self.spawn_timer = 0.0
         self.spawn_cooldown = self.spawn_interval
+
+    def reset(self):
+        """스포너를 완전히 초기 상태로 리셋"""
+        self.round = 1
+        self.current_spawn_count = 0
+
+        # 기본 설정으로 복원
+        self.spawn_interval = self.base_spawn_interval
+        self.spawn_count = self.base_spawn_count
+        self.max_spawns_per_round = 3 + self.round
+
+        # 타이머 리셋
+        self.spawn_timer = 0.0
+        self.spawn_cooldown = self.spawn_interval
+
+        # 스포너 활성화
+        self.active = True

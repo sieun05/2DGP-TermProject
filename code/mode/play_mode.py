@@ -30,7 +30,10 @@ def handle_events():
             pass
 
 def init():
-    global player
+    global player, zombie_spawners
+
+    # 게임 월드 완전 초기화 (혹시 남아있는 객체들 제거)
+    game_world.clear()
 
     map = Map()
     game_world.add_object(map, 0)
@@ -68,8 +71,11 @@ def init():
     cars = [Car(map, *car_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(car_list)) if random.randint(0, 8) == 0]
     game_world.add_objects(cars, 1)
 
+    # 좀비 스포너들을 완전히 새로 생성
     zombie_spawners = [ZombieSpawner(1, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
     game_world.add_objects(zombie_spawners, 0)
+
+    print("Play mode initialized: All zombie spawners reset to initial state")
 
 
 def finish():
