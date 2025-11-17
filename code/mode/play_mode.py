@@ -12,8 +12,9 @@ from player import Player
 import game_world
 from zombie import Zombie
 from building import Building
-from map_data import building_list
+from map_data import *
 import random
+from car import Car
 
 
 def handle_events():
@@ -57,6 +58,10 @@ def init():
         game_world.add_collision_pair("player:building", None, building)
         for zombie in zombies:
             game_world.add_collision_pair("zombie:building", None, building)
+
+    cars = [Car(map, *car_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(car_list)) if random.randint(0, 8) == 0]
+    game_world.add_objects(cars, 1)
+
 
 def finish():
     game_world.clear()
