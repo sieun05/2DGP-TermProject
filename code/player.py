@@ -41,11 +41,13 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 4
 
 # 발사율 설정: 20발/초
 BULLETS_PER_SECOND = 5.0
 BULLET_COOLDOWN = 1.0 / BULLETS_PER_SECOND
+
+PLAYER_SIZE = 64
 
 
 class Idle:
@@ -62,14 +64,21 @@ class Idle:
             self.player.attack()
 
     def do(self):
-        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
 
     def draw(self):
         if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 100, 300, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
-        else:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 100, 200, 100, 100, int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
-
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 5, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
+        elif self.player.face_dir_x == -1:  # face_dir == -1: # left
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 6, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE,PLAYER_SIZE)
+        elif self.player.face_dir_y == -1:  # up
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 7, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
+        else:  # face_dir == -1: # down
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 4, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
 
 class Run:
     def __init__(self, player):
@@ -92,6 +101,9 @@ class Run:
             self.player.face_dir_x = 1
 
     def exit(self, e):
+        self.player.face_dir_x = self.player.dir_x
+        self.player.face_dir_y = self.player.dir_y
+
         # 키업 이벤트에 따라 방향 값을 감소
         if w_up(e):
             self.player.dir_y = self.player.dir_y - 1
@@ -105,8 +117,10 @@ class Run:
         if space_down(e):
             self.player.attack()
 
+
+
     def do(self):
-        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
 
          # 이동 거리 계산
         dis_x = self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
@@ -165,13 +179,18 @@ class Run:
             self.player.w_y = 600
 
     def draw(self):
-        if self.player.face_dir_x == 1:  # right
-            self.player.image.clip_draw(int(self.player.frame) * 100, 100, 100, 100,
-                                        int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
-        else:  # face_dir == -1: # left
-            self.player.image.clip_draw(int(self.player.frame) * 100, 0, 100, 100,
-                                        int(self.player.w_x), int(self.player.w_y)+30, 90, 90)
-
+        if self.player.dir_x == 1:  # right
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 5, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
+        elif self.player.dir_x == -1:  # face_dir == -1: # left
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 6, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
+        elif self.player.dir_y == -1:  # up
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 7, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
+        else:  # face_dir == -1: # down
+            self.player.image.clip_draw(int(self.player.frame) * 64, 64 * 4, 64, 64, int(self.player.w_x),
+                                        int(self.player.w_y) + 30, PLAYER_SIZE, PLAYER_SIZE)
 
 class Player:
     def __init__(self, map):
@@ -186,7 +205,7 @@ class Player:
         self.gun_ty = 0
 
         self.map = map
-        self.image = load_image('images/img.png')
+        self.image = load_image('images/player.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
 
         self.x, self.y = self.w_x+ self.map.x, self.w_y + self.map.y
