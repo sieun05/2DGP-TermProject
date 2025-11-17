@@ -218,7 +218,7 @@ class Player:
         self.image = load_image('images/player.png')
         self.font = load_font('images/ENCR10B.TTF', 16)
 
-        self.x, self.y = self.w_x+ self.map.x, self.w_y + self.map.y
+        self.x, self.y = self.w_x+ self.map.x, self.w_y +self.map.y
 
         self.damage_flag = False
         self.damage_time = 0.0
@@ -245,7 +245,7 @@ class Player:
         self.x, self.y = self.w_x + self.map.x, self.w_y + self.map.y
 
         self.state_machine.update()
-        self.building_crash_flag = False
+
 
         # RUN 상태에서 모든 방향키가 떼졌는지 확인하고 IDLE로 전환
         if self.state_machine.cur_state == self.RUN and self.dir_x == 0 and self.dir_y == 0:
@@ -281,6 +281,8 @@ class Player:
         if self.heart_delay_timer >= 0.5:
             self.heart_delay_flag = True
 
+        # 건물과의 상호작용 거리 체크 (충돌 처리 후에 실행)
+        self.check_building_interaction()
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
@@ -300,6 +302,28 @@ class Player:
         print(f"Building check")
         pass
 
+    def check_building_interaction(self):
+        """건물과의 상호작용 가능한 거리인지 체크"""
+        self.building_crash_flag = False  # 기본값은 False
+
+        # game_world에서 모든 건물 객체를 가져와서 거리 체크
+        for layer in game_world.world:
+            for obj in layer:
+                # Building 클래스의 객체인지 확인 (타입 체크)
+                if obj.__class__.__name__ == 'Building':
+                    # 플레이어와 건물 간의 거리 계산
+                    distance_x = abs(self.x - obj.x)
+                    distance_y = abs(self.y - (obj.y + 40))  # 건물 중심 높이 보정
+
+                    # 상호작용 가능한 거리 (건물 바운딩박스보다 약간 큰 범위)
+                    # 건물 바운딩박스: x축 ±80, y축 0~100
+                    interaction_distance_x = 100  # 80 + 20 (여유 거리)
+                    interaction_distance_y = 70  # 100 + 20 (여유 거리)
+
+                    if distance_x <= interaction_distance_x and distance_y <= interaction_distance_y:
+                        self.building_crash_flag = True
+                        return
+
     def get_bb(self):   # 충돌체크용 바운딩 박스, left, bottom, right, top 순서로 반환
         return self.w_x - 10, self.w_y - 5, self.w_x + 10, self.w_y + 20
 
@@ -317,6 +341,7 @@ class Player:
             self.building_crash_flag = True
 
             # print(f"Player collided with Building at ({other.x}, {other.y})")
+
         elif key == "player:zombie":
             self.damage_flag = True
             self.damage_time = 0.0
