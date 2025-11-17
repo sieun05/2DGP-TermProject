@@ -90,8 +90,8 @@ class Idle:
 
 
 class Zombie:
-    def __init__(self, map, player):
-        self.x, self.y = random.randint(0, 2400), random.randint(0, 1800)
+    def __init__(self, map, player, x, y):
+        self.x, self.y = x, y
         self.frame = 0
         self.dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.dir_y = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
