@@ -352,3 +352,27 @@ class Player:
                 self.heart -= 3  # HP 감소 코드 추가
 
             # print(f"Player collided with Zombie at ({other.x}, {other.y})")
+
+    def reset(self):
+        """플레이어 상태를 초기값으로 리셋"""
+        self.w_x, self.w_y = 400, 300
+        self.face_dir_x, self.face_dir_y = 1, 1
+        self.dir_x, self.dir_y = 0, 0
+        self.frame = 0
+
+        self.building_crash_flag = False
+
+        self.damage_flag = False
+        self.damage_time = 0.0
+        self.heart = 100
+        self.heart_delay_timer = 0.0
+        self.heart_delay_flag = True
+
+        self.gun_delay_timer = get_time()
+
+        # 상태 머신을 IDLE로 초기화
+        self.state_machine.cur_state = self.IDLE
+        self.IDLE.enter(('START', None))
+
+    def attack(self):
+        pass

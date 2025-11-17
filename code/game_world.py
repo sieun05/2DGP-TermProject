@@ -16,11 +16,13 @@ def add_objects(ol, depth):
 def remove_object(o):
     for layer in world:
         if o in layer:
-            layer.remove(o)
             remove_collision_object(o)
+            layer.remove(o)
             return
 
-    raise ValueError('Cannot delete non existing object')
+    # 이미 삭제된 오브젝트를 다시 삭제하려고 할 때는 조용히 무시
+    # (모드 전환 시 발생할 수 있는 정상적인 상황)
+    pass
 
 def update():
     for layer in world:
@@ -37,10 +39,13 @@ def render():
 
 
 def clear():
-    global world
+    global world, collision_pairs
 
     for layer in world:
         layer.clear()
+
+    # 충돌 페어도 모두 정리하여 완전한 초기화
+    collision_pairs.clear()
 
 def remove_collision_object(o):
     for pairs in collision_pairs.values():

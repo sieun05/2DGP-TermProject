@@ -34,7 +34,13 @@ def init():
     map = Map()
     game_world.add_object(map, 0)
 
-    player = Player(map)
+    # 플레이어가 이미 존재한다면 상태 초기화, 없다면 새로 생성
+    if 'player' in globals() and player is not None:
+        player.map = map  # 새로운 맵 참조 설정
+        player.reset()  # 플레이어 상태 초기화
+    else:
+        player = Player(map)
+
     game_world.add_object(player, 1)
 
     game_world.add_collision_pair("player:zombie", player, None)
