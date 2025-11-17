@@ -49,7 +49,7 @@ def init():
     game_world.add_collision_pair("zombie:zombie", None, None)
     game_world.add_collision_pair("zombie:gun", None, None)
 
-    zombies = [Zombie(map, player) for _ in range(6)]
+    zombies = [Zombie(map, player, random.randint(0, 2400), random.randint(0,1800)) for _ in range(6)]
     game_world.add_objects(zombies, 1)
     for i, zombie in enumerate(zombies):
         game_world.add_collision_pair("player:zombie", None, zombie)
