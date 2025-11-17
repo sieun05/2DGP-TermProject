@@ -60,8 +60,8 @@ class Idle:
         self.player.dir_y = 0
 
     def exit(self, e):
-        if space_down(e):
-            self.player.attack()
+        if space_down(e) and self.player.building_crash_flag:
+            self.player.building_check()
 
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -119,8 +119,8 @@ class Run:
         elif d_up(e):
             self.player.dir_x = self.player.dir_x - 1
 
-        if space_down(e):
-            self.player.attack()
+        if space_down(e) and self.player.building_crash_flag:
+            self.player.building_check()
 
 
 
@@ -296,7 +296,8 @@ class Player:
         self.font.draw(self.w_x - 50, self.w_y + 50, f'(heart: {self.heart})', (0, 0, 0))
         draw_rectangle(*self.get_bb())
 
-    def attack(self):
+    def building_check(self):
+        print(f"Building check")
         pass
 
     def get_bb(self):   # 충돌체크용 바운딩 박스, left, bottom, right, top 순서로 반환
@@ -315,7 +316,7 @@ class Player:
 
             self.building_crash_flag = True
 
-            print(f"Player collided with Building at ({other.x}, {other.y})")
+            # print(f"Player collided with Building at ({other.x}, {other.y})")
         elif key == "player:zombie":
             self.damage_flag = True
             self.damage_time = 0.0
@@ -325,4 +326,4 @@ class Player:
                 self.heart_delay_timer = 0.0  # frame_time 기반 누적 타이머로 변경
                 self.heart -= 3  # HP 감소 코드 추가
 
-            print(f"Player collided with Zombie at ({other.x}, {other.y})")
+            # print(f"Player collided with Zombie at ({other.x}, {other.y})")
