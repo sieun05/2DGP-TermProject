@@ -36,6 +36,7 @@ class Building:
 
     def clear(self):
         del self.image
+        del self.particle_image
 
     def get_bb(self):
         return (self.x-(self.map.x) - 80, self.y-(self.map.y),
