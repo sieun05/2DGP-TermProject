@@ -40,7 +40,7 @@ class Car:
 
     def get_bb(self):
         return (self.x-(self.map.x) - 48, self.y-(self.map.y),
-                self.x-(self.map.x) + 48, self.y-(self.map.y) + 60)
+                self.x-(self.map.x) + 48, self.y-(self.map.y) + 30)
 
     def handle_collision(self, key, other):
         # if key == "player:car":
