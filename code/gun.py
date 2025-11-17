@@ -13,10 +13,21 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 class Gun:
+    # 클래스 변수: 모든 총알 인스턴스가 공유
+    gun_image = None
+
+    @classmethod
+    def load_resources(cls):
+        """클래스 리소스를 로드 (한 번만 실행)"""
+        if cls.gun_image is None:
+            cls.gun_image = load_image('images/gun.png')
+
     def __init__(self, map, sx, sy, tx, ty):
+        # 클래스 리소스 로드 (처음 호출시에만 실제로 로드됨)
+        Gun.load_resources()
+
         self.x, self.y = sx, sy
         self.sx, self.sy, self.tx, self.ty = sx, sy, tx, ty
-        self.image = load_image('images/gun.png')
         self.map = map
 
         self.t = 0.0
@@ -31,11 +42,12 @@ class Gun:
             game_world.remove_object(self)
 
     def draw(self):
-        self.image.draw(self.x-(self.map.x), self.y-(self.map.y))
+        Gun.gun_image.draw(self.x-(self.map.x), self.y-(self.map.y))
         draw_rectangle(*self.get_bb())
 
     def clear(self):
-        del self.image
+        # 개별 인스턴스에서는 이미지를 삭제하지 않음 (공유 리소스이므로)
+        pass
 
     def get_bb(self):
         return (self.x-(self.map.x) - 5, self.y-(self.map.y) - 5,
