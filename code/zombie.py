@@ -31,7 +31,7 @@ class Idle:
         pass
 
     def do(self):
-        self.zombie.frame = (self.zombie.frame + 1) % 4
+        self.zombie.frame = (self.zombie.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         old_x, old_y = self.zombie.x, self.zombie.y
 
         # 이동에 필요한 거리값이 0이면 division by zero 를 피하기 위해 처리
@@ -82,10 +82,10 @@ class Idle:
             self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.dir_x == 1:  # right
-                self.zombie.image.clip_draw(self.zombie.frame * 70, 910, 70, 70,
+                self.zombie.image.clip_draw(int(self.zombie.frame) * 70, 910, 70, 70,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
             else:  # face_dir == -1: # left
-                self.zombie.image.clip_draw(self.zombie.frame * 70, 630, 70, 70,
+                self.zombie.image.clip_draw(int(self.zombie.frame) * 70, 630, 70, 70,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
 
 
