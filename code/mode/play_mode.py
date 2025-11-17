@@ -51,7 +51,7 @@ def init():
         for other_zombie in zombies[i+1:]:
             game_world.add_collision_pair("zombie:zombie", zombie, other_zombie)
 
-    buildings = [Building(map, *building_list[i], random.randint(0, 1)) for i in range(len(building_list)) if random.randint(0, 2) == 0]
+    buildings = [Building(map, *building_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(building_list)) if random.randint(0, 2) == 0]
     game_world.add_objects(buildings, 1)
     for building in buildings:
         game_world.add_collision_pair("player:building", None, building)
