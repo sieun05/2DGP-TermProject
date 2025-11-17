@@ -3,10 +3,10 @@ from sdl2 import *
 
 import game_world
 import game_framework  # 수정: from code import game_framework → import game_framework
-from code import zombie
 from state_machine import StateMachine
 from map import Map
 from gun import Gun
+from zombie import Zombie
 
 def w_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w

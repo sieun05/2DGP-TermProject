@@ -33,16 +33,29 @@ class Idle:
         self.zombie.frame = (self.zombie.frame + 1) % 4
         old_x, old_y = self.zombie.x, self.zombie.y
 
+        # 이동에 필요한 거리값이 0이면 division by zero 를 피하기 위해 처리
+        if self.zombie.distance == 0:
+            # 목표와 현재가 같으므로 이동 없음
+            self.zombie.dir_x = 0
+            self.zombie.dir_y = 0
+            return
+
         if (self.zombie.t < 1.0 and
                 (self.zombie.tx == self.zombie.player.x and self.zombie.ty == self.zombie.player.y)):
             self.zombie.t += RUN_SPEED_PPS * game_framework.frame_time / self.zombie.distance
-            self.zombie.x = (1-self.zombie.t) * self.zombie.sx + self.zombie.t * self.zombie.tx
-            self.zombie.y = (1-self.zombie.t) * self.zombie.sy + self.zombie.t * self.zombie.ty
+            self.zombie.x = (1 - self.zombie.t) * self.zombie.sx + self.zombie.t * self.zombie.tx
+            self.zombie.y = (1 - self.zombie.t) * self.zombie.sy + self.zombie.t * self.zombie.ty
         else:
             self.zombie.sx, self.zombie.sy = self.zombie.x, self.zombie.y
             self.zombie.tx, self.zombie.ty = self.zombie.player.x, self.zombie.player.y
             self.zombie.t = 0.0
             self.zombie.distance = math.sqrt((self.zombie.tx - self.zombie.x) ** 2 + (self.zombie.ty - self.zombie.y) ** 2)
+
+            # distance가 0이면 더 이상 이동할 필요 없음
+            if self.zombie.distance == 0:
+                self.zombie.dir_x = 0
+                self.zombie.dir_y = 0
+                return
 
             self.zombie.t += RUN_SPEED_PPS * game_framework.frame_time / self.zombie.distance
             self.zombie.x = (1 - self.zombie.t) * self.zombie.sx + self.zombie.t * self.zombie.tx
@@ -54,7 +67,6 @@ class Idle:
             self.zombie.dir_x = -1
         else:
             self.zombie.dir_x = 0
-
 
         if ((1 - self.zombie.t) * self.zombie.sy + self.zombie.t * self.zombie.ty) - old_y > 0:
             self.zombie.dir_y = 1
@@ -131,10 +143,33 @@ class Zombie:
         if key == "player:zombie":
             pass
         elif key == "zombie:building":
-            if self.x + 15 >= (other.x - 80) or self.x - 15 <= (other.x + 80):
-                self.x -= self.dir_x * RUN_SPEED_PPS * game_framework.frame_time
-            if self.y + 15 >= (other.y) or self.y - 15 <= (other.y + 100):
-                self.y -= self.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+            # 이전 로직은 dir_x/dir_y 값에 의존하여 충돌 보정이 제대로 되지 않음.
+            # 충돌 시에는 바운딩 박스의 겹침(overlap)을 계산하여 더 작은 축으로 분리(resolution)하도록 변경.
+            left_a, bottom_a, right_a, top_a = self.get_bb()
+            left_b, bottom_b, right_b, top_b = other.get_bb()
+
+            overlap_x = min(right_a, right_b) - max(left_a, left_b)
+            overlap_y = min(top_a, top_b) - max(bottom_a, bottom_b)
+
+            # 실제로 겹치는 경우에만 처리
+            if overlap_x > 0 and overlap_y > 0:
+                # 더 적게 겹치는 축으로 분리
+                if overlap_x < overlap_y:
+                    # x축으로 분리
+                    if self.x < other.x:
+                        self.x -= (overlap_x + 1)
+                    else:
+                        self.x += (overlap_x + 1)
+                    # 분리 후 x방향 정지
+                    self.dir_x = 0
+                else:
+                    # y축으로 분리
+                    if self.y < other.y:
+                        self.y -= (overlap_y + 1)
+                    else:
+                        self.y += (overlap_y + 1)
+                    # 분리 후 y방향 정지
+                    self.dir_y = 0
         elif key == "zombie:zombie":
             if self.x < other.x:
                 self.x -= 0.2
