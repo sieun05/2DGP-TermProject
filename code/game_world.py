@@ -7,11 +7,13 @@ def add_object(o, depth):
     for layer in world:
         layer.sort(key=lambda obj: obj.y, reverse=True)
 
+
 def add_objects(ol, depth):
     world[depth] += ol
 
     for layer in world:
         layer.sort(key=lambda obj: obj.y, reverse=True)
+
 
 def remove_object(o):
     for layer in world:
@@ -29,7 +31,8 @@ def update():
         layer.sort(key=lambda obj: obj.y, reverse=True)
 
 
-        for o in layer:
+        # iterate over a copy so that objects can be removed safely during update
+        for o in layer[:]:
             o.update()
 
 def render():
@@ -41,17 +44,27 @@ def render():
 def clear():
     global world, collision_pairs
 
+    # call clear on objects if they expose such method to allow cleanup
     for layer in world:
+        for o in layer:
+            if hasattr(o, 'clear'):
+                try:
+                    o.clear()
+                except Exception:
+                    pass
         layer.clear()
 
     # 충돌 페어도 모두 정리하여 완전한 초기화
     collision_pairs.clear()
 
 def remove_collision_object(o):
+    # remove all occurrences of object o from any collision lists
     for pairs in collision_pairs.values():
-        if o in pairs[0]:
+        # remove from left list
+        while o in pairs[0]:
             pairs[0].remove(o)
-        if o in pairs[1]:
+        # remove from right list
+        while o in pairs[1]:
             pairs[1].remove(o)
 
 
@@ -69,20 +82,36 @@ def collide(a, b):
 def add_collision_pair(key, a, b):
     if key not in collision_pairs:
         collision_pairs[key] = [[], []]  # [list of a, list of b]
+    pairs = collision_pairs[key]
     if a:
-        collision_pairs[key][0].append(a)
+        # avoid duplicates
+        if a not in pairs[0]:
+            pairs[0].append(a)
     if b:
-        collision_pairs[key][1].append(b)
+        # avoid duplicates
+        if b not in pairs[1]:
+            pairs[1].append(b)
 
 def handle_collisions():
     # 등록된 모든 충돌 그룹에 대해 충돌 검사 수행
 
-    for key, pairs in collision_pairs.items():
-        for a in pairs[0]:
-            for b in pairs[1]:
-                if collide(a, b):
-                    a.handle_collision(key, b)
-                    b.handle_collision(key, a)
+    for key, pairs in list(collision_pairs.items()):
+        # iterate over snapshots to be safe against modifications during handling
+        left_list = pairs[0][:]
+        right_list = pairs[1][:]
+        for a in left_list:
+            for b in right_list:
+                # skip if any object was removed
+                if a not in left_list or b not in right_list:
+                    # this check ensures we don't try to handle collisions with stale refs
+                    pass
+                try:
+                    if collide(a, b):
+                        a.handle_collision(key, b)
+                        b.handle_collision(key, a)
+                except Exception:
+                    # ignore any collision errors from removed or invalid objects
+                    continue
 
 def get_objects_by_type(object_type):
     """특정 타입의 오브젝트들을 반환"""
