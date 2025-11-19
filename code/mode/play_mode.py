@@ -53,15 +53,6 @@ def init():
     game_world.add_collision_pair("zombie:zombie", None, None)
     game_world.add_collision_pair("zombie:gun", None, None)
 
-    # zombies = [Zombie(map, player, random.randint(0, 2400), random.randint(0,1800)) for _ in range(6)]
-    # game_world.add_objects(zombies, 1)
-    # for i, zombie in enumerate(zombies):
-    #     game_world.add_collision_pair("player:zombie", None, zombie)
-    #     game_world.add_collision_pair("zombie:building", zombie, None)
-    #     game_world.add_collision_pair("zombie:gun", zombie, None)
-    #     for other_zombie in zombies[i+1:]:
-    #         game_world.add_collision_pair("zombie:zombie", zombie, other_zombie)
-
     buildings = [Building(map, *building_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(building_list)) if random.randint(0, 2) == 0]
     game_world.add_objects(buildings, 1)
     for building in buildings:
@@ -70,6 +61,17 @@ def init():
 
     cars = [Car(map, *car_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(car_list)) if random.randint(0, 8) == 0]
     game_world.add_objects(cars, 1)
+
+    # 이전에 있던 좀비 스포너들(있다면) 정리
+    if 'zombie_spawners' in globals() and zombie_spawners is not None:
+        try:
+            for s in zombie_spawners:
+                if hasattr(s, 'clear'):
+                    s.clear()
+        except Exception:
+            pass
+        # 이전 리스트 참조 제거
+        zombie_spawners = None
 
     # 좀비 스포너들을 완전히 새로 생성
     zombie_spawners = [ZombieSpawner(1, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
