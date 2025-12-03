@@ -18,7 +18,6 @@ def init():
     image_pc = load_image('images/title_pc.png')
     image_zom = load_image('images/title_zom.png')
     image_font = load_image('images/title_font.png')
-    logo_start_time = get_time()
 
     global timer_pc, timer_zom, timer_font
     timer_pc = timer_zom = timer_font = get_time()
