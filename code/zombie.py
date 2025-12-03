@@ -82,10 +82,10 @@ class Idle:
             self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.dir_x == 1:  # right
-                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256, 1024 + 256 * self.zombie.zombie_type, 256, 256,
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256 + self.zombie.damage_flag * 256 , 1024 + 256 * self.zombie.zombie_type, 256, 256,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 100, 100)
             else:  # face_dir == -1: # left
-                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256, 256 * self.zombie.zombie_type, 256, 256,
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256 + self.zombie.damage_flag * 256, 256 * self.zombie.zombie_type, 256, 256,
                                             self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 100, 100)
 
 
@@ -120,6 +120,8 @@ class Zombie:
         self.player = player
 
         self.heart = 100
+        self.damage_flag = 0
+        self.damage_timer = 0.0
 
         self.t=0.0
         self.sx, self.sy = self.x, self.y       # start x, y
@@ -138,6 +140,8 @@ class Zombie:
     def update(self):
         self.state_machine.update()
 
+        if self.damage_flag > 0 and get_time() - self.damage_timer > 0.3:
+            self.damage_flag = 0
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
@@ -235,6 +239,8 @@ class Zombie:
                 self.y += ny * push_force
         elif key == "zombie:gun":
             self.heart -= 5
+            self.damage_flag = 4
+            self.damage_timer = get_time()
 
             if self.heart <= 0:
                 game_world.remove_object(self)
