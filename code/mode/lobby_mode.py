@@ -2,34 +2,40 @@ from pico2d import *
 import sys
 import os
 
-import player
-
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
 from . import play_mode, title_mode
-from Player2 import Player2
+from player2 import Player2
+from zombie2 import Zombie2
+import random
 
 image = None
 player = None
+zombies = []
 
 def init():
-    global image, player
+    global image, player, zombies
     image = load_image('images/lobby.png')
 
     player = Player2()
 
+    zombies = [ Zombie2(random.randint(0, 1), random.randint(0, 3)) for _ in range(10) ]
+
 
 def finish():
-    global image, player
+    global image, player, zombies
     del player
     del image
+    del zombies
 
 
 def update():
     global player
 
     player.update()
+    for zombie in zombies:
+        zombie.update()
     pass
 
 
@@ -39,6 +45,8 @@ def draw():
     clear_canvas()
     image.draw(400, 300)
     player.draw()
+    for zombie in zombies:
+        zombie.draw()
     update_canvas()
 
 
