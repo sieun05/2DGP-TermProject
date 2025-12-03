@@ -83,8 +83,9 @@ class ZombieSpawner:
             spawn_y = self.y + math.sin(angle) * spawn_radius
             spawn_x = max(50, min(2350, spawn_x))
             spawn_y = max(50, min(1750, spawn_y))
+            zombie_type = random.randint(0, 3)
 
-            zombie = Zombie(self.map, self.player, spawn_x, spawn_y)
+            zombie = Zombie(self.map, self.player, zombie_type, spawn_x, spawn_y)
             game_world.add_object(zombie, 1)
             newly_spawned.append(zombie)
 

@@ -82,11 +82,11 @@ class Idle:
             self.zombie.map.y - 100 < self.zombie.y and self.zombie.map.y + 700 > self.zombie.y):
 
             if self.zombie.dir_x == 1:  # right
-                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 70, 910, 70, 70,
-                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256, 1024 + 256 * self.zombie.zombie_type, 256, 256,
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 100, 100)
             else:  # face_dir == -1: # left
-                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 70, 630, 70, 70,
-                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 50, 50)
+                Zombie.zombie_image.clip_draw(int(self.zombie.frame) * 256, 256 * self.zombie.zombie_type, 256, 256,
+                                            self.zombie.x-(self.zombie.map.x), self.zombie.y-(self.zombie.map.y), 100, 100)
 
 
 class Zombie:
@@ -98,11 +98,11 @@ class Zombie:
     def load_resources(cls):
         """클래스 리소스를 로드 (한 번만 실행)"""
         if cls.zombie_image is None:
-            cls.zombie_image = load_image('images/1.png')
+            cls.zombie_image = load_image('images/zombie.png')
         if cls.zombie_font is None:
             cls.zombie_font = load_font('images/ENCR10B.TTF', 16)
 
-    def __init__(self, map, player, x=None, y=None):
+    def __init__(self, map, player, num, x=None, y=None):
         # 클래스 리소스 로드 (처음 호출시에만 실제로 로드됨)
         Zombie.load_resources()
 
@@ -112,6 +112,7 @@ class Zombie:
         else:
             self.x, self.y = x, y
 
+        self.zombie_type = num
         self.frame = 0
         self.dir_x = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
         self.dir_y = 1  # 기본적으로 오른쪽을 바라봄 (1: 오른쪽, -1: 왼쪽)
@@ -153,8 +154,8 @@ class Zombie:
         pass
 
     def get_bb(self):
-        return (self.x - (self.map.x) - 15, self.y - (self.map.y) - 15,
-                self.x - (self.map.x) + 15, self.y - (self.map.y) + 15)
+        return (self.x - (self.map.x) - 15, self.y - (self.map.y) - 30,
+                self.x - (self.map.x) + 15, self.y - (self.map.y) + 30)
 
     # self.zombie.x - (self.zombie.map.x), self.zombie.y - (self.zombie.map.y)
 
