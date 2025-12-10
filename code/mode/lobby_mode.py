@@ -45,6 +45,9 @@ def finish():
 
 def update():
     game_world.update()
+
+    if car.To_play:
+        game_framework.change_mode(play_mode)
     pass
 
 
@@ -70,7 +73,7 @@ def handle_events():
                 if car is not None:
                     c_left, c_bottom, c_right, c_top = car.get_bb()
                     if c_left <= mx <= c_right and c_bottom <= my <= c_top:
-                        game_framework.change_mode(play_mode)
+                        car.clicked()
                         continue
                 # container 클릭 체크
                 left, bottom, right, top = container.get_bb()

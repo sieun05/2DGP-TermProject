@@ -5,6 +5,8 @@ import common
 import random
 
 class Car3:
+    sound = None
+
     def __init__(self, map, x, y):
         self.font = load_font('images/ENCR10B.TTF', 16)
         self.image = load_image('images/car3.png')
@@ -15,6 +17,10 @@ class Car3:
         self.click_timer = 0.0
         self.clicked_flag = False
         self.To_home = False
+
+        if Car3.sound is None:
+            Car3.sound = load_wav('sounds/car_horn.wav')
+            Car3.sound.set_volume(64)
 
     def update(self):
         if self.clicked_flag and get_time() - self.click_timer >= 3.0:
@@ -39,3 +45,4 @@ class Car3:
         if self.clicked_flag == False:
             self.click_timer = get_time()
             self.clicked_flag = True
+            Car3.sound.play()
