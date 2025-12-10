@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-from . import title_mode
+from . import title_mode, lobby_mode
 from . import gameover_mode
 from map import Map
 from player import Player
@@ -19,6 +19,7 @@ from car import Car
 from zombie_spawner import ZombieSpawner
 from player_ui import PlayerUI
 import common
+from big_car import Car3
 
 
 def handle_events():
@@ -26,14 +27,15 @@ def handle_events():
     for event in event_list:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_mode(title_mode)
         else:
             player.handle_event(event)
             pass
 
 def init():
-    global player, zombie_spawners
+    global player, zombie_spawners, home_car_timer, home_car
+
+    home_car_timer = get_time()
+    home_car = None
 
     # 게임 월드 완전 초기화 (혹시 남아있는 객체들 제거)
     game_world.clear()
@@ -61,6 +63,7 @@ def init():
     game_world.add_collision_pair("zombie:zombie", None, None)
     game_world.add_collision_pair("zombie:gun", None, None)
     game_world.add_collision_pair("player:car", player, None)
+    game_world.add_collision_pair("player:homecar", player, None)
 
     buildings = [Building(map, *building_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(building_list)) if random.randint(0, 2) == 0]
     game_world.add_objects(buildings, 1)
@@ -99,6 +102,8 @@ def finish():
     pass
 
 def update():
+    global home_car_timer, home_car
+
     game_world.update()
     game_world.handle_collisions()
 
@@ -108,7 +113,15 @@ def update():
             print(f"Player heart {common.player_heart} <= 0 -> pushing gameover mode")
             player.gameover_pushed = True
             game_framework.change_mode(gameover_mode)
-    pass
+
+    if home_car is None and get_time() - home_car_timer >= 5.0:
+        print('Spawning home car')
+        home_car = Car3(player.map, *zombie_spawner_list[random.randint(0, len(zombie_spawner_list) - 1)])
+        game_world.add_object(home_car, 1)
+        game_world.add_collision_pair("player:homecar", None, home_car)
+    else:
+        if home_car and home_car.To_home:
+            game_framework.change_mode(lobby_mode)
 
 def draw():
     clear_canvas()

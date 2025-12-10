@@ -215,6 +215,7 @@ class Player:
         self.building_crash_flag = False
         self.crash_building = None
         self.crash_car = None
+        self.crash_homecar = None
 
         self.gun_tx = 0
         self.gun_ty = 0
@@ -323,6 +324,14 @@ class Player:
                 pass
             self.crash_car = None
 
+        if self.crash_homecar is not None:
+            try:
+                self.crash_homecar.clicked()
+                print("Home Car explored!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            except Exception:
+                pass
+            self.crash_homecar = None
+
     def check_building_interaction(self):
         """건물과의 상호작용 가능한 거리인지 체크"""
         self.building_crash_flag = False  # 기본값은 False
@@ -358,11 +367,15 @@ class Player:
 
             self.building_crash_flag = True
             self.crash_building = other
+            self.building_crash_flag = True
+
+        elif key == "player:homecar":
+            self.crash_homecar = other
+            self.building_crash_flag = True
 
         elif key == "player:car":
             # car와 겹쳐도 플레이어를 밀어내지 않음.
             # 스페이스바로 상호작용할 수 있도록 플래그를 세우고 충돌 대상을 저장합니다.
-            self.building_crash_flag = True
             self.crash_car = other
 
         elif key == "player:zombie":
@@ -375,6 +388,7 @@ class Player:
                 common.player_heart -= 3  # HP 감소 코드 추가
 
             # gameover 판단 및 push는 play_mode에서 처리합니다.
+
 
     def reset(self):
         """플레이어 상태를 초기값으로 리셋"""

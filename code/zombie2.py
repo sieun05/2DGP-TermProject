@@ -22,6 +22,7 @@ image = None
 class Zombie2:
     def __init__(self, num, type):
         self.num = num
+        self.dir_x = 0
 
         if self.num == 0:
             self.x, self.y = random.randint(10, 140), random.randint(250, 600)

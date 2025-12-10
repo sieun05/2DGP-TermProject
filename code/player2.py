@@ -32,6 +32,8 @@ class Player2:
         self.font = load_font('images/ENCR10B.TTF', 16)
 
         self.heart = 100
+        self.dir_x = 0
+        self.dir = 0
 
         # 인스턴스 변수로 속도 관리
         self.run_speed_pps = RUN_SPEED_PPS

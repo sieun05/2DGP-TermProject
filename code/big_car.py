@@ -13,14 +13,16 @@ class Car3:
         self.map = map
 
         self.click_timer = 0.0
+        self.clicked_flag = False
         self.To_home = False
 
     def update(self):
-        if get_time() - self.click_timer >= 3.0:
+        if self.clicked_flag and get_time() - self.click_timer >= 3.0:
             self.To_home = True
 
     def draw(self):
         self.image.clip_draw(0, 0, 97, 60, self.x - (self.map.x), self.y - (self.map.y), int(97*1.5), int(60*1.5))
+        draw_rectangle(*self.get_bb())
 
     def clear(self):
         del self.image
@@ -34,4 +36,6 @@ class Car3:
         pass
 
     def clicked(self):
-        self.click_timer = get_time()
+        if self.clicked_flag == False:
+            self.click_timer = get_time()
+            self.clicked_flag = True
