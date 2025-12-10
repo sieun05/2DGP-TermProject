@@ -6,6 +6,7 @@ class PlayerUI:
     def __init__(self):
         self.image = load_image('images/playmode_ui.png')
         self.player_health_image = load_image('images/heart_bar2.png')
+        self.font = load_font('images/ENCR10B.TTF', 16)
         self.y=0
 
     def draw(self):
@@ -32,6 +33,10 @@ class PlayerUI:
             draw_x = left_x + (cur_w / 2)
             self.player_health_image.clip_draw(0, 0, cur_w, h, int(draw_x), 581)
         # ...existing code...
+
+        self.font.draw(655, 530, f'{common.gear}', (0, 0, 0))
+        self.font.draw(723, 530, f'{common.apple}', (0, 0, 0))
+        self.font.draw(625, 555, f'power: {common.player_attack_power}|speed: {int(common.player_attack_speed)}', (0, 0, 0))
 
     def update(self):
         pass

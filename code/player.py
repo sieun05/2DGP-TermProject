@@ -211,6 +211,7 @@ class Player:
         self.frame = 0
 
         self.building_crash_flag = False
+        self.crash_building = None
 
         self.gun_tx = 0
         self.gun_ty = 0
@@ -307,8 +308,8 @@ class Player:
         draw_rectangle(*self.get_bb())
 
     def building_check(self):
-        print(f"Building check")
-        pass
+        if self.crash_building is not None:
+            self.crash_building.explore()
 
     def check_building_interaction(self):
         """건물과의 상호작용 가능한 거리인지 체크"""
@@ -344,6 +345,7 @@ class Player:
                 self.w_y -= 2 * self.dir_y * self.run_speed_pps * game_framework.frame_time
 
             self.building_crash_flag = True
+            self.crash_building = other
 
         elif key == "player:zombie":
             self.damage_flag = True
