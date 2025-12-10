@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
 from . import lobby_mode
+import common
 
 image_back, image_pc, image_zom, image_font = None, None, None, None
 timer_pc, timer_zom, timer_font = 0.0, 0.0, 0.0
@@ -26,6 +27,15 @@ def init():
 def finish():
     global image_back, image_pc, image_zom, image_font
     del image_back, image_pc, image_zom, image_font
+
+    common.player_heart = 100
+    common.player_max_heart = 100
+    common.player_attack_power = 10
+    common.player_attack_speed = 1.0
+    common.apple = 0
+    common.gear = 0
+    common.round = 1
+
 
 def update():
     global timer_pc, timer_zom, timer_font

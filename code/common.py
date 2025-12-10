@@ -1,10 +1,10 @@
-from player_ui import *
-
 apple = 0
 gear = 0
 player_max_heart = 100
 player_heart = 100
-player_attack_speed = 1.0
-player_attack_power = 10
+player_attack_speed = 5.0
+player_attack_power = 5
+zombie_num = 0
 round = 1
+level = 1
 

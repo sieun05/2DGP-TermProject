@@ -6,6 +6,7 @@ import math
 import game_world
 import game_framework
 from state_machine import StateMachine
+import common
 
 # zombie Run Speed
 PIXEL_PER_METER = (75.0 / 1.8)  # 75 pixel 1.8 meter
@@ -238,9 +239,16 @@ class Zombie:
                 self.x += nx * push_force
                 self.y += ny * push_force
         elif key == "zombie:gun":
-            self.heart -= 5
+            self.heart -= common.player_attack_power
             self.damage_flag = 4
             self.damage_timer = get_time()
 
             if self.heart <= 0:
                 game_world.remove_object(self)
+                common.zombie_num += 1
+                if common.zombie_num > 20 * common.level:
+                    common.zombie_num = 0
+                    common.level += 1
+                    common.player_max_heart +=30
+                    common.player_heart = common.player_max_heart
+

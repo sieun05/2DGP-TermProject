@@ -17,6 +17,8 @@ from map_data import *
 import random
 from car import Car
 from zombie_spawner import ZombieSpawner
+from player_ui import PlayerUI
+import common
 
 
 def handle_events():
@@ -35,6 +37,9 @@ def init():
 
     # 게임 월드 완전 초기화 (혹시 남아있는 객체들 제거)
     game_world.clear()
+
+    player_ui = PlayerUI()
+    game_world.add_object(player_ui, 2)
 
     map = Map()
     game_world.add_object(map, 0)
@@ -93,9 +98,9 @@ def update():
     game_world.handle_collisions()
 
     # 플레이어 HP가 0 이하가 되면 게임오버 모드로 전환 (한 번만)
-    if 'player' in globals() and player is not None and getattr(player, 'heart', 1) <= 0:
+    if 'player' in globals() and player is not None and common.player_heart <= 0:
         if not getattr(player, 'gameover_pushed', False):
-            print(f"Player heart {player.heart} <= 0 -> pushing gameover mode")
+            print(f"Player heart {common.player_heart} <= 0 -> pushing gameover mode")
             player.gameover_pushed = True
             game_framework.change_mode(gameover_mode)
     pass

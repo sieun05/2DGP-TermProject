@@ -1,6 +1,7 @@
 from pico2d import *
 from sdl2 import *
 
+import common
 import game_world
 import game_framework  # 수정: from code import game_framework → import game_framework
 from state_machine import StateMachine
@@ -258,6 +259,9 @@ class Player:
             self.state_machine.cur_state = self.IDLE
             self.IDLE.enter(('STOP', None))
 
+        # 총알 발사 딜레이 관리
+        BULLET_COOLDOWN = 1.0 / common.player_attack_speed
+
         self.gun_delay_timer += game_framework.frame_time
         if self.gun_delay_timer >= BULLET_COOLDOWN:
             self.gun_delay_timer = 0.0  # 타이머를 0으로 리셋
@@ -348,8 +352,7 @@ class Player:
             if self.heart_delay_flag:
                 self.heart_delay_flag = False
                 self.heart_delay_timer = 0.0  # frame_time 기반 누적 타이머로 변경
-                self.heart -= 3  # HP 감소 코드 추가
-                print(f"Player heart decreased -> {self.heart}")
+                common.player_heart -= 3  # HP 감소 코드 추가
 
             # gameover 판단 및 push는 play_mode에서 처리합니다.
 

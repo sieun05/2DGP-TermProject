@@ -14,6 +14,7 @@ from zombie2 import Zombie2
 import random
 from container import Container
 from lobby_car import Car
+from player_ui import PlayerUI
 
 def init():
     global image, player, zombies, container, car
@@ -30,6 +31,9 @@ def init():
 
     car = Car()
     game_world.add_object(car, 0)
+
+    player_ui = PlayerUI()
+    game_world.add_object(player_ui, 2)
 
 def finish():
     game_world.clear()
