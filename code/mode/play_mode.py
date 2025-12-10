@@ -20,6 +20,7 @@ from zombie_spawner import ZombieSpawner
 from player_ui import PlayerUI
 import common
 from big_car import Car3
+from playmode_sound import BGM_Play
 
 
 def handle_events():
@@ -95,6 +96,9 @@ def init():
     player.gameover_pushed = False
 
     print("Play mode initialized: All zombie spawners reset to initial state")
+
+    bgm = BGM_Play()
+    game_world.add_object(bgm, 0)
 
 
 def finish():
