@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
 from . import title_mode
+from . import gameover_mode
 from map import Map
 from player import Player
 # from grass import Grass
@@ -77,6 +78,9 @@ def init():
     zombie_spawners = [ZombieSpawner(1, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
     game_world.add_objects(zombie_spawners, 0)
 
+    # 플레이어 게임오버 푸시 플래그 초기화
+    player.gameover_pushed = False
+
     print("Play mode initialized: All zombie spawners reset to initial state")
 
 
@@ -87,6 +91,13 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
+
+    # 플레이어 HP가 0 이하가 되면 게임오버 모드로 전환 (한 번만)
+    if 'player' in globals() and player is not None and getattr(player, 'heart', 1) <= 0:
+        if not getattr(player, 'gameover_pushed', False):
+            print(f"Player heart {player.heart} <= 0 -> pushing gameover mode")
+            player.gameover_pushed = True
+            game_framework.change_mode(gameover_mode)
     pass
 
 def draw():

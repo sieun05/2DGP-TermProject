@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-from . import lobby_mode
+from . import title_mode
 
 image = None
 
@@ -32,8 +32,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_mode(lobby_mode)
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_RETURN:
+            game_framework.change_mode(title_mode)
 
 
 def pause():

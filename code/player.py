@@ -222,7 +222,7 @@ class Player:
 
         self.damage_flag = False
         self.damage_time = 0.0
-        self.heart = 100
+        self.heart = 10
         self.heart_delay_timer = 0.0
         self.heart_delay_flag = True
 
@@ -230,6 +230,9 @@ class Player:
 
         # 인스턴스 변수로 속도 관리
         self.run_speed_pps = RUN_SPEED_PPS
+
+        # 게임오버 푸시 플래그 초기화 (안전성 보장)
+        self.gameover_pushed = False
 
         # 상태 객체 생성 시 현재 player 인스턴스를 전달
         self.IDLE = Idle(self)
@@ -333,15 +336,10 @@ class Player:
 
             if self.x + 10 >= (other.x - 80) or self.x - 10 <= (other.x + 80):
                 self.w_x -= 2 * self.dir_x * self.run_speed_pps * game_framework.frame_time
-                # self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
-                #print(f"x")
             if self.y + 5 >= (other.y) or self.y - 20 <= (other.y + 100):
                 self.w_y -= 2 * self.dir_y * self.run_speed_pps * game_framework.frame_time
-                #print(f"y")
 
             self.building_crash_flag = True
-
-            # print(f"Player collided with Building at ({other.x}, {other.y})")
 
         elif key == "player:zombie":
             self.damage_flag = True
@@ -351,8 +349,9 @@ class Player:
                 self.heart_delay_flag = False
                 self.heart_delay_timer = 0.0  # frame_time 기반 누적 타이머로 변경
                 self.heart -= 3  # HP 감소 코드 추가
+                print(f"Player heart decreased -> {self.heart}")
 
-            # print(f"Player collided with Zombie at ({other.x}, {other.y})")
+            # gameover 판단 및 push는 play_mode에서 처리합니다.
 
     def reset(self):
         """플레이어 상태를 초기값으로 리셋"""
