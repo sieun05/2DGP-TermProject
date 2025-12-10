@@ -61,7 +61,7 @@ class SelectItem:
         elif self.kind == 'maxhp':
             # 최대 체력 증가
             if hasattr(common, 'player_max_heart') and common.apple >= 5:
-                common.player_max_heart += 20
+                common.player_max_heart += 8
                 common.apple -= 5
                 common.player_heart = common.player_max_heart
                 flag = True
