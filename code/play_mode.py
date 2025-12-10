@@ -120,6 +120,7 @@ def update():
         game_world.add_collision_pair("player:homecar", None, home_car)
     else:
         if home_car and home_car.To_home:
+            common.round += 1
             game_framework.change_mode(lobby_mode)
 
 def draw():

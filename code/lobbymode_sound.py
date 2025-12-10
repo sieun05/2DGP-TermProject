@@ -5,7 +5,7 @@ class BGM_Lobby:
     def __init__(self):
         self.bgm = load_music('sounds/lobby.mp3')
         self.bgm.set_volume(40)
-        self.bgm.play()
+        self.bgm.repeat_play()
 
         self.y = 0
         pass
