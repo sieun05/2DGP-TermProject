@@ -4,8 +4,10 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
+import game_world
 from . import lobby_mode
 import common
+from titlemode_sound import BGM_Title
 
 image_back, image_pc, image_zom, image_font = None, None, None, None
 timer_pc, timer_zom, timer_font = 0.0, 0.0, 0.0
@@ -23,6 +25,9 @@ def init():
     global timer_pc, timer_zom, timer_font
     timer_pc = timer_zom = timer_font = get_time()
 
+    bgm = BGM_Title()
+    game_world.add_object(bgm, 0)
+
 
 def finish():
     global image_back, image_pc, image_zom, image_font
@@ -37,6 +42,8 @@ def finish():
     common.zombie_num = 0
     common.round = 1
     common.level = 1
+
+    game_world.clear()
 
 
 def update():
