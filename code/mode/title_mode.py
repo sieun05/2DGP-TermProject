@@ -28,13 +28,15 @@ def finish():
     global image_back, image_pc, image_zom, image_font
     del image_back, image_pc, image_zom, image_font
 
-    common.player_heart = 100
-    common.player_max_heart = 100
-    common.player_attack_power = 10
-    common.player_attack_speed = 1.0
     common.apple = 0
     common.gear = 0
+    common.player_max_heart = 100
+    common.player_heart = 100
+    common.player_attack_speed = 5.0
+    common.player_attack_power = 5
+    common.zombie_num = 0
     common.round = 1
+    common.level = 1
 
 
 def update():
