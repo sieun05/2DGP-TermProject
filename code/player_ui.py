@@ -36,7 +36,7 @@ class PlayerUI:
 
         self.font.draw(655, 530, f'{common.gear}', (0, 0, 0))
         self.font.draw(723, 530, f'{common.apple}', (0, 0, 0))
-        self.font.draw(625, 555, f'power: {common.player_attack_power}|speed: {int(common.player_attack_speed)}', (0, 0, 0))
+        self.font.draw(625, 555, f'power:{common.player_attack_power}|speed:{int(common.player_attack_speed)}', (0, 0, 0))
 
     def update(self):
         pass
