@@ -15,6 +15,7 @@ import random
 from container import Container
 from lobby_car import Car
 from player_ui import PlayerUI
+from lobbymode_sound import BGM_Lobby
 
 def init():
     global image, player, zombies, container, car
@@ -34,6 +35,9 @@ def init():
 
     player_ui = PlayerUI()
     game_world.add_object(player_ui, 2)
+
+    bgm = BGM_Lobby()
+    game_world.add_object(bgm, 0)
 
 def finish():
     game_world.clear()
