@@ -21,7 +21,7 @@ class ZombieSpawner:
         # min_spawn_interval: 소환 간격의 최소값(클램프). 너무 작게 내려가지 않도록 제한합니다.
         self.min_spawn_interval = 0.3
         # max_total_zombies: 월드에 존재할 수 있는 전체 좀비 상한(성능/밸런스 목적).
-        self.max_total_zombies = 20 + (round - 1) * 5
+        self.max_total_zombies = 10 + (round - 1) * 5
         # ===================================================================
 
         # 동적 상태 (보통 조정 불필요)
