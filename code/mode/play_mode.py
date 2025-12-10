@@ -55,9 +55,12 @@ def init():
 
     game_world.add_collision_pair("player:zombie", player, None)
     game_world.add_collision_pair("player:building", player, None)
+    # player와 car 충돌 페어 왼쪽에 player 등록 (우측은 각 car 객체가 추가됨)
+    game_world.add_collision_pair("player:car", player, None)
     game_world.add_collision_pair("zombie:building", None, None)
     game_world.add_collision_pair("zombie:zombie", None, None)
     game_world.add_collision_pair("zombie:gun", None, None)
+    game_world.add_collision_pair("player:car", player, None)
 
     buildings = [Building(map, *building_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(building_list)) if random.randint(0, 2) == 0]
     game_world.add_objects(buildings, 1)
@@ -67,6 +70,8 @@ def init():
 
     cars = [Car(map, *car_list[i], random.randint(0, 1), random.randint(0, 1)) for i in range(len(car_list)) if random.randint(0, 8) == 0]
     game_world.add_objects(cars, 1)
+    for car in cars:
+        game_world.add_collision_pair("player:car", None, car)
 
     # 이전에 있던 좀비 스포너들(있다면) 정리
     if 'zombie_spawners' in globals() and zombie_spawners is not None:

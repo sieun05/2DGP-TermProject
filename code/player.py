@@ -63,6 +63,8 @@ class Idle:
     def exit(self, e):
         if space_down(e) and self.player.building_crash_flag:
             self.player.building_check()
+        if space_down(e) and self.player.crash_car is not None:
+            self.player.building_check()
 
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -212,6 +214,7 @@ class Player:
 
         self.building_crash_flag = False
         self.crash_building = None
+        self.crash_car = None
 
         self.gun_tx = 0
         self.gun_ty = 0
@@ -310,6 +313,15 @@ class Player:
     def building_check(self):
         if self.crash_building is not None:
             self.crash_building.explore()
+            self.crash_building = None
+        if self.crash_car is not None:
+            # 먼저 explore 호출하고, 이후에 참조를 해제합니다.
+            try:
+                self.crash_car.explore()
+                print("Car explored")
+            except Exception:
+                pass
+            self.crash_car = None
 
     def check_building_interaction(self):
         """건물과의 상호작용 가능한 거리인지 체크"""
@@ -346,6 +358,12 @@ class Player:
 
             self.building_crash_flag = True
             self.crash_building = other
+
+        elif key == "player:car":
+            # car와 겹쳐도 플레이어를 밀어내지 않음.
+            # 스페이스바로 상호작용할 수 있도록 플래그를 세우고 충돌 대상을 저장합니다.
+            self.building_crash_flag = True
+            self.crash_car = other
 
         elif key == "player:zombie":
             self.damage_flag = True
