@@ -1,5 +1,5 @@
-apple = 0
-gear = 0
+apple = 100
+gear = 100
 player_max_heart = 100
 player_heart = 100
 player_attack_speed = 5.0
