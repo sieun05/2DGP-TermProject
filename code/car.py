@@ -48,7 +48,7 @@ class Car:
             # Building과 동일한 방식으로 카운트 표시
             self.num_image.clip_draw((4 - int(get_time() - self.explore_timer)) * 20, 0, 20, 20,
                                      self.x - (self.map.x), self.y - (self.map.y) + 60, 40, 40)
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def clear(self):
         del self.image

@@ -45,7 +45,7 @@ class Building:
         # self.font.draw(100, 400, f'({self.x}, {self.y})', (0, 0, 0))
         if self.explored:
             self.num_image.clip_draw((4-int(get_time()-self.explore_timer))*20, 0, 20, 20, self.x-(self.map.x), self.y-(self.map.y)+200, 40, 40)
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def clear(self):
         del self.image

@@ -28,7 +28,7 @@ class Car3:
 
     def draw(self):
         self.image.clip_draw(0, 0, 97, 60, self.x - (self.map.x), self.y - (self.map.y), int(97*1.5), int(60*1.5))
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def clear(self):
         del self.image

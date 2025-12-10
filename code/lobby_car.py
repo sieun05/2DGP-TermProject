@@ -22,7 +22,8 @@ class Car:
         pass
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
+        pass
 
     def clear(self):
         pass

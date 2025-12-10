@@ -308,8 +308,8 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.w_x - 50, self.w_y + 50, f'(heart: {self.heart})', (0, 0, 0))
-        draw_rectangle(*self.get_bb())
+        #self.font.draw(self.w_x - 50, self.w_y + 50, f'(heart: {self.heart})', (0, 0, 0))
+        #draw_rectangle(*self.get_bb())
 
     def building_check(self):
         if self.crash_building is not None:

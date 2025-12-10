@@ -25,10 +25,11 @@ class SelectItem:
 
     def draw(self):
         # 선택 영역 가시화 (기본 동작 유지)
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
         # 종류 표시
-        label = self.kind
-        self.font.draw(self.x - 30, self.y - 80, label, (0, 0, 0))
+        #label = self.kind
+        #self.font.draw(self.x - 30, self.y - 80, label, (0, 0, 0))
+        pass
 
     def clear(self):
         try:

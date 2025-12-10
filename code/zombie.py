@@ -149,8 +149,8 @@ class Zombie:
 
     def draw(self):
         self.state_machine.draw()
-        self.zombie_font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.heart})', (255, 0, 0))
-        draw_rectangle(*self.get_bb())
+        #self.zombie_font.draw(self.x-(self.map.x), self.y-(self.map.y), f'({self.heart})', (255, 0, 0))
+        #draw_rectangle(*self.get_bb())
 
     def attack(self):
         pass
