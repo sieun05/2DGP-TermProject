@@ -88,7 +88,7 @@ def init():
         zombie_spawners = None
 
     # 좀비 스포너들을 완전히 새로 생성
-    zombie_spawners = [ZombieSpawner(1, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
+    zombie_spawners = [ZombieSpawner(common.round, *zombie_spawner_list[i], map, player) for i in range(len(zombie_spawner_list))]
     game_world.add_objects(zombie_spawners, 0)
 
     # 플레이어 게임오버 푸시 플래그 초기화

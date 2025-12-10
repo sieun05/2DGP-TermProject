@@ -328,6 +328,7 @@ class Player:
             try:
                 self.crash_homecar.clicked()
                 print("Home Car explored!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                round += 1
             except Exception:
                 pass
             self.crash_homecar = None

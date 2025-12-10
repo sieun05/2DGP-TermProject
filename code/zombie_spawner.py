@@ -21,7 +21,7 @@ class ZombieSpawner:
         # min_spawn_interval: 소환 간격의 최소값(클램프). 너무 작게 내려가지 않도록 제한합니다.
         self.min_spawn_interval = 0.3
         # max_total_zombies: 월드에 존재할 수 있는 전체 좀비 상한(성능/밸런스 목적).
-        self.max_total_zombies = 5
+        self.max_total_zombies = 20 + (round - 1) * 5
         # ===================================================================
 
         # 동적 상태 (보통 조정 불필요)
@@ -34,7 +34,7 @@ class ZombieSpawner:
         self.active = True
 
         # 내부 caps: 라운드 기반 최대 한 번에 소환 개수
-        self.max_spawn_count = max(6, 3 + round)
+        self.max_spawn_count = max(3, 6)
 
     def update(self):
         if not self.active:
