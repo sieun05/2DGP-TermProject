@@ -1,11 +1,7 @@
 from pico2d import *
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
 import game_framework
 import game_world
-from . import lobby_mode
+import lobby_mode
 import common
 from titlemode_sound import BGM_Title
 

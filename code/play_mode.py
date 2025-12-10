@@ -1,17 +1,12 @@
 from pico2d import *
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-from . import title_mode, lobby_mode
-from . import gameover_mode
+import lobby_mode
+import gameover_mode
 from map import Map
 from player import Player
 # from grass import Grass
 import game_world
-from zombie import Zombie
 from building import Building
 from map_data import *
 import random

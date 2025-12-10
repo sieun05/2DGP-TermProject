@@ -1,12 +1,9 @@
 from pico2d import *
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-from . import play_mode, title_mode
-from . import item_mode  # 추가: 아이템 모드로 전환
+import title_mode
+import play_mode
+import item_mode
 import game_world
 
 from player2 import Player2

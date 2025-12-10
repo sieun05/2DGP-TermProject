@@ -1,10 +1,6 @@
 from pico2d import *
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import game_framework
-from . import lobby_mode
 import game_world
 from item_select import SelectItem
 import common
